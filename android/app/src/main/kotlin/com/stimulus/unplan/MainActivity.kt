@@ -1,4 +1,4 @@
-package com.example.unplan
+package com.stimulus.unplan
 
 import io.flutter.embedding.android.FlutterActivity
 

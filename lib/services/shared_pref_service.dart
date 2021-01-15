@@ -8,7 +8,8 @@ class SharedPrefService {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       result['isStored'] = await prefs.setString(key, value);
     } catch (e) {
-      result['error'] = 'Error occurred while storing ' + key + ': ' + e.toString();
+      result['error'] =
+          'Error occurred while storing ' + key + ': ' + e.toString();
     }
     return result;
   }
@@ -20,34 +21,37 @@ class SharedPrefService {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       result['isStored'] = await prefs.setInt(key, value);
     } catch (e) {
-      result['error'] = 'Error occurred while storing ' + key + ': ' + e.toString();
+      result['error'] =
+          'Error occurred while storing ' + key + ': ' + e.toString();
     }
     return result;
   }
 
-  static Future<Map> storeBool(String key, bool value) async {
-    Map<String, Object> result = new Map();
-    result['isStored'] = false;
-    try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      result['isStored'] = await prefs.setBool(key, value);
-    } catch (e) {
-      result['error'] = 'Error occurred while storing ' + key + ': ' + e.toString();
-    }
-    return result;
-  }
-
-  static Future<Map> storeDouble(String key, double value) async {
-    Map<String, Object> result = new Map();
-    result['isStored'] = false;
-    try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      result['isStored'] = await prefs.setDouble(key, value);
-    } catch (e) {
-      result['error'] = 'Error occurred while storing ' + key + ': ' + e.toString();
-    }
-    return result;
-  }
+  // static Future<Map> storeBool(String key, bool value) async {
+  //   Map<String, Object> result = new Map();
+  //   result['isStored'] = false;
+  //   try {
+  //     SharedPreferences prefs = await SharedPreferences.getInstance();
+  //     result['isStored'] = await prefs.setBool(key, value);
+  //   } catch (e) {
+  //     result['error'] =
+  //         'Error occurred while storing ' + key + ': ' + e.toString();
+  //   }
+  //   return result;
+  // }
+  //
+  // static Future<Map> storeDouble(String key, double value) async {
+  //   Map<String, Object> result = new Map();
+  //   result['isStored'] = false;
+  //   try {
+  //     SharedPreferences prefs = await SharedPreferences.getInstance();
+  //     result['isStored'] = await prefs.setDouble(key, value);
+  //   } catch (e) {
+  //     result['error'] =
+  //         'Error occurred while storing ' + key + ': ' + e.toString();
+  //   }
+  //   return result;
+  // }
 
   static Future<Map> fetchFromSharedPref(String key) async {
     Map<String, Object> result = new Map();
@@ -55,7 +59,8 @@ class SharedPrefService {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       result[key] = prefs.getString(key);
     } catch (e) {
-      result['error'] = 'Error occurred while getting ' + key + ': ' + e.toString();
+      result['error'] =
+          'Error occurred while getting ' + key + ': ' + e.toString();
     }
     return result;
   }
@@ -67,7 +72,8 @@ class SharedPrefService {
       result['cleared'] = prefs.clear();
       print('Persistence storage cleared.');
     } catch (e) {
-      result['error'] = 'Error occurred while clearing shared preferences : ' + e.toString();
+      result['error'] =
+          'Error occurred while clearing shared preferences : ' + e.toString();
     }
     return result;
   }

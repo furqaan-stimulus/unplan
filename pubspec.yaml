@@ -43,7 +43,11 @@ dependencies:
   #  flushbar: ^1.10.4
   another_flushbar: ^1.10.8
   flutter_local_notifications: ^3.0.3
-  rxdart: ^0.25.0
+  geolocator: ^6.1.13
+  geocoding: ^1.0.5
+  location: ^3.2.1
+  intl: ^0.16.1
+
 
 
 dev_dependencies:

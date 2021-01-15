@@ -10,6 +10,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
 import '../ui/views/bottom_sheet_view.dart';
+import '../ui/views/home_data_view.dart';
+import '../ui/views/home_log_view.dart';
 import '../ui/views/home_stats_view.dart';
 import '../ui/views/home_view.dart';
 import '../ui/views/login_view.dart';
@@ -21,12 +23,16 @@ class Routes {
   static const String homeView = '/home-view';
   static const String homeStatsView = '/home-stats-view';
   static const String bottomSheetView = '/bottom-sheet-view';
+  static const String homeLogView = '/home-log-view';
+  static const String homeDataView = '/home-data-view';
   static const all = <String>{
     splashView,
     loginView,
     homeView,
     homeStatsView,
     bottomSheetView,
+    homeLogView,
+    homeDataView,
   };
 }
 
@@ -39,6 +45,8 @@ class Router extends RouterBase {
     RouteDef(Routes.homeView, page: HomeView),
     RouteDef(Routes.homeStatsView, page: HomeStatsView),
     RouteDef(Routes.bottomSheetView, page: BottomSheetView),
+    RouteDef(Routes.homeLogView, page: HomeLogView),
+    RouteDef(Routes.homeDataView, page: HomeDataView),
   ];
   @override
   Map<Type, AutoRouteFactory> get pagesMap => _pagesMap;
@@ -57,7 +65,7 @@ class Router extends RouterBase {
     },
     HomeView: (data) {
       return MaterialPageRoute<dynamic>(
-        builder: (context) => HomeView(),
+        builder: (context) => const HomeView(),
         settings: data,
       );
     },
@@ -70,6 +78,18 @@ class Router extends RouterBase {
     BottomSheetView: (data) {
       return MaterialPageRoute<dynamic>(
         builder: (context) => BottomSheetView(),
+        settings: data,
+      );
+    },
+    HomeLogView: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => HomeLogView(),
+        settings: data,
+      );
+    },
+    HomeDataView: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => HomeDataView(),
         settings: data,
       );
     },

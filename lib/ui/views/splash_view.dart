@@ -22,7 +22,7 @@ class SplashView extends StatelessWidget {
         body: Column(
           children: [
             Container(
-              height: MediaQuery.of(context).size.height / 1.9,
+              height: MediaQuery.of(context).size.height / 2.2,
               child: Center(
                 child: Padding(
                   padding: const EdgeInsets.only(top: 125.0),
@@ -33,8 +33,10 @@ class SplashView extends StatelessWidget {
                       RichText(
                         text: TextSpan(
                           children: <TextSpan>[
-                            TextSpan(text: 'un', style: TextStyles.splashTitle1),
-                            TextSpan(text: 'plan', style: TextStyles.splashTitle2),
+                            TextSpan(
+                                text: 'un', style: TextStyles.splashTitle1),
+                            TextSpan(
+                                text: 'plan', style: TextStyles.splashTitle2),
                           ],
                         ),
                       ),
@@ -50,18 +52,21 @@ class SplashView extends StatelessWidget {
                 ),
               ),
             ),
+            SizedBox(
+              height: 30.0,
+            ),
             Container(
-              height: MediaQuery.of(context).size.height / 2.2,
+              height: MediaQuery.of(context).size.height / 2.5,
               child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 20.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Image.asset('assets/new.png'),
-                    ],
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.asset('assets/new.png'),
+                    SizedBox(
+                      width: 50.0,
+                    ),
+                  ],
                 ),
               ),
             ),

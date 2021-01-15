@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:provider/provider.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:unplan/app/locator.dart';
 import 'package:unplan/app/router.gr.dart' as route;
+import 'package:unplan/model/location_model.dart';
+import 'package:unplan/services/location_service.dart';
 import 'package:unplan/ui/views/splash_view.dart';
 
 void main() async {
@@ -12,7 +15,8 @@ void main() async {
 }
 
 class MyApp extends StatefulWidget {
-  static FlutterLocalNotificationsPlugin notifications = FlutterLocalNotificationsPlugin();
+  static FlutterLocalNotificationsPlugin notifications =
+      FlutterLocalNotificationsPlugin();
 
   @override
   _MyAppState createState() => _MyAppState();
@@ -29,21 +33,25 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      navigatorKey: _navigationService.navigatorKey,
-      onGenerateRoute: route.Router().onGenerateRoute,
-      title: 'unplan',
-      theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
+    return StreamProvider<LocationModel>(
+      create: (_) => LocationService().locationStream,
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        navigatorKey: _navigationService.navigatorKey,
+        onGenerateRoute: route.Router().onGenerateRoute,
+        title: 'unplan',
+        theme: ThemeData(
+          primarySwatch: Colors.deepPurple,
+        ),
+        home: SplashView(),
       ),
-      home: SplashView(),
     );
   }
 
   void _initializeLocalNotificationsPlugin(BuildContext context) {
     var settingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
-    var settingsIOS = IOSInitializationSettings(onDidReceiveLocalNotification: onDidReceiveLocalNotification);
+    var settingsIOS = IOSInitializationSettings(
+        onDidReceiveLocalNotification: onDidReceiveLocalNotification);
     MyApp.notifications.initialize(
       InitializationSettings(android: settingsAndroid, iOS: settingsIOS),
       onSelectNotification: (payload) async {
@@ -56,7 +64,8 @@ class _MyAppState extends State<MyApp> {
     await _navigationService.pushNamedAndRemoveUntil(route.Routes.homeView);
   }
 
-  Future onDidReceiveLocalNotification(int id, String title, String body, String payload) async {
+  Future onDidReceiveLocalNotification(
+      int id, String title, String body, String payload) async {
     await _navigationService.pushNamedAndRemoveUntil(route.Routes.homeView);
   }
 }
