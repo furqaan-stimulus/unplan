@@ -64,8 +64,14 @@ class Router extends RouterBase {
       );
     },
     HomeView: (data) {
+      final args = data.getArgs<HomeViewArguments>(
+        orElse: () => HomeViewArguments(),
+      );
       return MaterialPageRoute<dynamic>(
-        builder: (context) => const HomeView(),
+        builder: (context) => HomeView(
+          key: args.key,
+          name: args.name,
+        ),
         settings: data,
       );
     },
@@ -94,4 +100,15 @@ class Router extends RouterBase {
       );
     },
   };
+}
+
+/// ************************************************************************
+/// Arguments holder classes
+/// *************************************************************************
+
+/// HomeView arguments holder class
+class HomeViewArguments {
+  final Key key;
+  final String name;
+  HomeViewArguments({this.key, this.name});
 }

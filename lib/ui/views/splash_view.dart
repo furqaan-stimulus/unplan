@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:stacked/stacked.dart';
 import 'package:unplan/utils/text_styles.dart';
 import 'package:unplan/utils/view_color.dart';
@@ -11,9 +12,9 @@ class SplashView extends StatelessWidget {
       viewModelBuilder: () => SplashViewModel(),
       onModelReady: (model) {
         Future.delayed(
-          Duration(seconds: 1),
+          Duration(milliseconds: 1000),
           () {
-            model.navigateToLoginView();
+            model.isUserSignedIn();
           },
         );
       },

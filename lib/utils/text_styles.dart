@@ -147,6 +147,26 @@ class TextStyles {
     color: ViewColor.text_green_color,
   );
 
+  static const TextStyle alertTextStyle = TextStyle(
+    fontFamily: KFontFam,
+    package: _kFontPkg,
+    fontWeight: FontWeight.bold,
+    fontStyle: FontStyle.normal,
+    fontSize: 14,
+    letterSpacing: 0.65,
+    color: ViewColor.text_pink_color,
+  );
+
+  static const TextStyle alertTextStyle1 = TextStyle(
+    fontFamily: KFontFam,
+    package: _kFontPkg,
+    fontWeight: FontWeight.bold,
+    fontStyle: FontStyle.normal,
+    fontSize: 14,
+    letterSpacing: 0.65,
+    color: ViewColor.text_red_color,
+  );
+
   // notification text
   static const TextStyle notificationTextStyle = TextStyle(
     fontFamily: KFontFam,

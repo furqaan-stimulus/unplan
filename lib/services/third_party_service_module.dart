@@ -1,6 +1,5 @@
 import 'package:injectable/injectable.dart';
 import 'package:stacked_services/stacked_services.dart';
-import 'package:unplan/services/location_service.dart';
 import 'package:unplan/services/shared_pref_service.dart';
 
 @module
@@ -15,5 +14,5 @@ abstract class ThirdPartyServiceModule {
   SharedPrefService get sharedPrefService;
 
   @lazySingleton
-  LocationService get locationService;
+  SnackbarService get snackBarService;
 }

@@ -2,9 +2,13 @@ import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:stacked/stacked.dart';
+import 'package:unplan/enum/log_type.dart';
 import 'package:unplan/utils/text_styles.dart';
 import 'package:unplan/utils/view_color.dart';
 import 'package:unplan/view_models/bottom_sheet_view_model.dart';
+import 'package:unplan/widgets/break_button.dart';
+import 'package:unplan/widgets/clock_out_button.dart';
+import 'package:unplan/widgets/confirm_button.dart';
 
 class BottomSheetView extends StatefulWidget {
   @override
@@ -22,10 +26,11 @@ class _BottomSheetViewState extends State<BottomSheetView> {
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder.nonReactive(
+    return ViewModelBuilder.reactive(
       viewModelBuilder: () => BottomSheetViewModel(),
       builder: (context, model, child) => Scaffold(
         body: Container(
+          height: 300,
           decoration: new BoxDecoration(
             color: Colors.white,
             borderRadius: new BorderRadius.only(
@@ -38,7 +43,7 @@ class _BottomSheetViewState extends State<BottomSheetView> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SvgPicture.asset(
-                'assets/svg/home.svg',
+                'assets/svg/office.svg',
                 height: 45,
                 width: 45,
               ),
@@ -59,142 +64,105 @@ class _BottomSheetViewState extends State<BottomSheetView> {
               ),
               isClicked
                   ? Text(
-                      'Working From Home',
+                      'Working From Office',
                       style: TextStyles.bottomTextStyle,
                     )
                   : Text(
-                      'Home',
+                      'Office',
                       style: TextStyles.bottomTextStyle,
                     ),
               SizedBox(
                 height: 5.0,
               ),
-              Text(
-                'Naranpura Ahmedabad',
-                style: TextStyles.bottomTextStyle2,
-              ),
+              (model.currentPosition != null)
+                  ? Text(
+                      model.currentAddress,
+                      style: TextStyles.bottomTextStyle2,
+                    )
+                  : Text(''),
               SizedBox(
                 height: 10.0,
               ),
-              Text(
-                'ON TIME',
-                style: TextStyles.bottomTextStyle3,
-              ),
+              isClicked
+                  ? Text(
+                      'ON TIME',
+                      style: TextStyles.bottomTextStyle3,
+                    )
+                  : Text(''),
               SizedBox(
                 height: 20.0,
               ),
               isClicked
-                  ? Padding(
-                      padding: const EdgeInsets.only(left: 30.0, right: 30.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        width: double.infinity,
-                        child: FlatButton(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                          child: Text(
-                            "CONFIRM",
-                            style: TextStyles.bottomButtonText,
+                  ? ConfirmButton(
+                      firstLog: true,
+                      pressed: model.getLastLog(LogType.clockIn),
+                      type: LogType.clockIn,
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        _isBtnClicked();
+                        Flushbar(
+                          messageText: Center(
+                            child: Text(
+                              "Clocked In Successfully!",
+                              style: TextStyles.notificationTextStyle1,
+                            ),
                           ),
-                          textColor: Colors.white,
-                          padding: EdgeInsets.all(16),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            _isBtnClicked();
-                            Flushbar(
-                              messageText: Center(
-                                child: Text(
-                                  "Clocked In Successfully!",
-                                  style: TextStyles.notificationTextStyle1,
-                                ),
-                              ),
-                              backgroundColor: ViewColor.notification_green_color,
-                              flushbarPosition: FlushbarPosition.TOP,
-                              flushbarStyle: FlushbarStyle.FLOATING,
-                              duration: Duration(seconds: 2),
-                            )..show(context);
-                          },
-                          color: ViewColor.background_purple_color,
-                        ),
-                      ),
+                          backgroundColor: ViewColor.notification_green_color,
+                          flushbarPosition: FlushbarPosition.TOP,
+                          flushbarStyle: FlushbarStyle.FLOATING,
+                          duration: Duration(seconds: 2),
+                        )..show(context);
+                      },
                     )
                   : Center(
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 20.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              width: 150,
-                              child: FlatButton(
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                child: Text(
-                                  "BREAK",
-                                  style: TextStyles.bottomButtonText,
+                          BreakButton(
+                            type: LogType.timeout,
+                            firstLog: false,
+                            pressed: model.getLastLog(LogType.timeout),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              _isBtnClicked();
+                              Flushbar(
+                                messageText: Center(
+                                  child: Text(
+                                    " Taking Break!",
+                                    style: TextStyles.notificationTextStyle1,
+                                  ),
                                 ),
-                                textColor: Colors.white,
-                                padding: EdgeInsets.all(16),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                  _isBtnClicked();
-                                  Flushbar(
-                                    messageText: Center(
-                                      child: Text(
-                                        " Taking Break!",
-                                        style: TextStyles.notificationTextStyle1,
-                                      ),
-                                    ),
-                                    backgroundColor: ViewColor.notification_green_color,
-                                    flushbarPosition: FlushbarPosition.TOP,
-                                    flushbarStyle: FlushbarStyle.FLOATING,
-                                    duration: Duration(seconds: 2),
-                                  )..show(context);
-                                },
-                                color: ViewColor.background_purple_color,
-                              ),
-                            ),
+                                backgroundColor: ViewColor.notification_green_color,
+                                flushbarPosition: FlushbarPosition.TOP,
+                                flushbarStyle: FlushbarStyle.FLOATING,
+                                duration: Duration(seconds: 2),
+                              )..show(context);
+                            },
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              left: 5.0,
-                            ),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              width: 150,
-                              child: FlatButton(
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                child: Text(
-                                  "SIGN OFF",
-                                  style: TextStyles.buttonTextStyle1,
+                          SizedBox(
+                            width: 5.0,
+                          ),
+                          ClockOutButton(
+                            firstLog: false,
+                            type: LogType.clockOut,
+                            pressed: model.getLastLog(LogType.clockOut),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              _isBtnClicked();
+                              Flushbar(
+                                messageText: Center(
+                                  child: Text(
+                                    "Clocked Out Successfully!",
+                                    style: TextStyles.notificationTextStyle1,
+                                  ),
                                 ),
-                                textColor: Colors.white,
-                                padding: EdgeInsets.all(16),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                  _isBtnClicked();
-                                  Flushbar(
-                                    messageText: Center(
-                                      child: Text(
-                                        "Clocked Out Successfully!",
-                                        style: TextStyles.notificationTextStyle1,
-                                      ),
-                                    ),
-                                    backgroundColor: ViewColor.notification_green_color,
-                                    flushbarPosition: FlushbarPosition.TOP,
-                                    flushbarStyle: FlushbarStyle.FLOATING,
-                                    duration: Duration(seconds: 2),
-                                  )..show(context);
-                                },
-                                color: ViewColor.button_green_color,
-                              ),
-                            ),
+                                backgroundColor: ViewColor.notification_green_color,
+                                flushbarPosition: FlushbarPosition.TOP,
+                                flushbarStyle: FlushbarStyle.FLOATING,
+                                duration: Duration(seconds: 2),
+                              )..show(context);
+                            },
                           ),
                         ],
                       ),
