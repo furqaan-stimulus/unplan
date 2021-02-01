@@ -55,7 +55,7 @@ class AttendanceService {
   }
 
   Stream<List<EmployeeDetail>> getLogToday() {
-    Future.delayed(const Duration(milliseconds: 250), () async {
+    Future.delayed(const Duration(microseconds: 250), () async {
       SharedPreferences preferences = await SharedPreferences.getInstance();
       String authToken = preferences.getString('token');
       int empId = preferences.getInt('id');

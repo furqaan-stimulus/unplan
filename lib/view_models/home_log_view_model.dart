@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -40,9 +39,14 @@ class HomeLogViewModel extends BaseViewModel {
   final AttendanceService _attendanceService = getIt<AttendanceService>();
 
   Future getLogType() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    _logType = preferences.getString('type');
-    notifyListeners();
+    // SharedPreferences preferences = await SharedPreferences.getInstance();
+    // _logType = preferences.getString('type');
+    // notifyListeners();
+    setBusy(true);
+    _attendanceService.getLogToday().listen((event) {
+      _logType = event.last.type;
+      setBusy(false);
+    });
     return _logType;
   }
 
