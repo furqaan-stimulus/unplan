@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'package:unplan/utils/text_styles.dart';
+import 'package:unplan/utils/utils.dart';
 import 'package:unplan/view_models/home_stats_view_model.dart';
 
 class HomeStatsView extends StatefulWidget {
@@ -21,7 +22,7 @@ class _HomeStatsViewState extends State<HomeStatsView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'this month',
+                Utils.statTitle0,
                 style: TextStyles.homeBottomText,
               ),
               SizedBox(
@@ -36,7 +37,7 @@ class _HomeStatsViewState extends State<HomeStatsView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'PRESENT',
+                        Utils.statSub1,
                         style: TextStyles.bottomTextStyle2,
                       ),
                       SizedBox(
@@ -53,7 +54,7 @@ class _HomeStatsViewState extends State<HomeStatsView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'ABSENT',
+                        Utils.statSub2,
                         style: TextStyles.bottomTextStyle2,
                       ),
                       SizedBox(
@@ -70,7 +71,7 @@ class _HomeStatsViewState extends State<HomeStatsView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'LEAVES',
+                        Utils.statSub3,
                         style: TextStyles.bottomTextStyle2,
                       ),
                       SizedBox(
@@ -88,7 +89,7 @@ class _HomeStatsViewState extends State<HomeStatsView> {
                 height: 20.0,
               ),
               Text(
-                'leave balance',
+                Utils.statTitle1,
                 style: TextStyles.homeBottomText,
               ),
               SizedBox(
@@ -105,7 +106,7 @@ class _HomeStatsViewState extends State<HomeStatsView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'PL',
+                          Utils.statSub4,
                           style: TextStyles.bottomTextStyle2,
                         ),
                         SizedBox(
@@ -124,7 +125,7 @@ class _HomeStatsViewState extends State<HomeStatsView> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'CL',
+                            Utils.statSub5,
                             style: TextStyles.bottomTextStyle2,
                           ),
                           SizedBox(
@@ -142,7 +143,7 @@ class _HomeStatsViewState extends State<HomeStatsView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'SL',
+                          Utils.statSub6,
                           style: TextStyles.bottomTextStyle2,
                         ),
                         SizedBox(

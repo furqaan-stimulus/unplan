@@ -1,8 +1,9 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
-import 'package:unplan/main.dart';
-import 'package:timezone/timezone.dart' as tz;
+import 'package:unplan/app/locator.dart';
+import 'package:unplan/model/attendance_log.dart';
+import 'package:unplan/services/attendance_service.dart';
 
 class HomeViewModel extends BaseViewModel {
   String _name;
@@ -16,6 +17,20 @@ class HomeViewModel extends BaseViewModel {
     notifyListeners();
     setBusy(false);
     return _name;
+  }
+
+  final AttendanceService _attendanceService = getIt<AttendanceService>();
+
+  List<EmployeeDetail> _logs = [];
+
+  List<EmployeeDetail> get logs => _logs;
+
+  initialise() {
+    setBusy(true);
+    _attendanceService.getLogToday().listen((event) {
+      _logs = event;
+      setBusy(false);
+    });
   }
 
   Future initializeNotification() async {

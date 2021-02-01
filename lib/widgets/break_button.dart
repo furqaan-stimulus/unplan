@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:unplan/enum/log_type.dart';
 import 'package:unplan/utils/text_styles.dart';
+import 'package:unplan/utils/utils.dart';
 import 'package:unplan/utils/view_color.dart';
 
 class BreakButton extends StatefulWidget {
@@ -26,7 +27,7 @@ class _BreakButtonState extends State<BreakButton> {
       child: FlatButton(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         child: Text(
-          "BREAK",
+          Utils.buttonBreak,
           style: TextStyles.bottomButtonText,
         ),
         textColor: Colors.white,

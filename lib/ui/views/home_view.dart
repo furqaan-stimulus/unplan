@@ -3,7 +3,9 @@ import 'package:intl/intl.dart';
 import 'package:stacked/stacked.dart';
 import 'package:unplan/ui/views/home_log_view.dart';
 import 'package:unplan/ui/views/home_stats_view.dart';
+import 'package:unplan/utils/date_time_format.dart';
 import 'package:unplan/utils/text_styles.dart';
+import 'package:unplan/utils/utils.dart';
 import 'package:unplan/view_models/home_view_model.dart';
 import 'package:timezone/data/latest.dart' as tzd;
 
@@ -19,12 +21,11 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
-    var now = DateTime.now();
-    var format = DateFormat('EEEE, MMM d yyyy').format(now);
     return ViewModelBuilder<HomeViewModel>.nonReactive(
       viewModelBuilder: () => HomeViewModel(),
       fireOnModelReadyOnce: true,
       onModelReady: (model) async {
+        model.initialise();
         tzd.initializeTimeZones();
         model.initializeNotification();
       },
@@ -47,14 +48,11 @@ class _HomeViewState extends State<HomeView> {
                         return RichText(
                           text: TextSpan(
                             children: <TextSpan>[
-                              TextSpan(
-                                  text: 'hi ', style: TextStyles.homeTitle),
+                              TextSpan(text: Utils.HI, style: TextStyles.homeTitle),
                               snapshot.hasData
-                                  ? TextSpan(
-                                      text: '${snapshot.data}',
-                                      style: TextStyles.homeTitle)
+                                  ? TextSpan(text: '${snapshot.data}', style: TextStyles.homeTitle)
                                   : TextSpan(text: ''),
-                              TextSpan(text: ',', style: TextStyles.homeTitle),
+                              TextSpan(text: Utils.COMMA, style: TextStyles.homeTitle),
                             ],
                           ),
                         );
@@ -64,7 +62,7 @@ class _HomeViewState extends State<HomeView> {
                       height: 10.0,
                     ),
                     Text(
-                      format,
+                      DateTimeFormat.homeDate(),
                       style: TextStyles.homeSubTitle,
                     ),
                   ],

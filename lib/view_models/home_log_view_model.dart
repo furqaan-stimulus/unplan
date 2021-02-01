@@ -1,13 +1,12 @@
 import 'dart:convert';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
+import 'package:unplan/app/locator.dart';
 import 'package:unplan/enum/log_type.dart';
-import 'package:unplan/model/attendance_detail.dart';
-import 'package:unplan/model/log_model.dart';
-import 'package:unplan/services/shared_pref_service.dart';
+import 'package:unplan/model/attendance_log.dart';
+import 'package:unplan/services/attendance_service.dart';
 import 'package:unplan/utils/utils.dart';
 
 class HomeLogViewModel extends BaseViewModel {
@@ -35,6 +34,10 @@ class HomeLogViewModel extends BaseViewModel {
   String _logType;
 
   String get logType => _logType;
+
+  var result;
+
+  final AttendanceService _attendanceService = getIt<AttendanceService>();
 
   Future getLogType() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -71,9 +74,17 @@ class HomeLogViewModel extends BaseViewModel {
     setBusy(false);
   }
 
-  List<LogModel> _logs = [];
+  List<EmployeeDetail> _logs = [];
 
-  List<LogModel> get logs => _logs;
+  List<EmployeeDetail> get logs => _logs;
+
+  initialise() {
+    setBusy(true);
+    _attendanceService.getLogToday().listen((event) {
+      _logs = event;
+      setBusy(false);
+    });
+  }
 
   getLastLog(LogType type) {
     if (type == LogType.clockIn) {
@@ -85,136 +96,18 @@ class HomeLogViewModel extends BaseViewModel {
     }
   }
 
-  Future<Map<String, dynamic>> markClockIn() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    int empId = preferences.getInt('id');
-
-    final Map<String, dynamic> clockInData = {
-      'emp_id': empId,
-      'date_time': DateTime.now().toString(),
-      'time': DateTime.now().toString(),
-      'type': 'clock-in',
-      'location': _currentAddress,
-      'currunt_lat': currentPosition.latitude,
-      'currunt_long': currentPosition.longitude,
-    };
-
-    print('post data $clockInData');
-
-    var token = preferences.getString('token');
-
-    Response response = await post(
-      Utils.attendance_url,
-      body: json.encode(clockInData),
-      headers: {'Content-Type': 'application/json', 'accept': 'application/json', 'Authorization': 'Bearer $token'},
-    );
-
-    var result;
-    if (response.statusCode == 200) {
-      setBusy(true);
-
-      final Map<String, dynamic> responseData = json.decode(response.body);
-
-      var logData = responseData;
-      AttendanceDetail authUser = AttendanceDetail.fromJson(logData);
-
-      await SharedPrefService.storeString('date_time', authUser.employeeAttendanceDetail.dateTime.toString());
-      await SharedPrefService.storeString('type', authUser.employeeAttendanceDetail.type);
-
-      result = {'status': true, 'message': 'code ${response.statusCode},${response.body} '};
-      setBusy(false);
-    } else {
-      result = {'status': false, 'message': 'code ${response.statusCode},${response.body} '};
-      print('fail: $result');
-    }
-
-    return jsonDecode(response.body);
+  markClockIn() async {
+    await _attendanceService.markLog(
+        Utils.CLOCKIN, _currentAddress, currentPosition.latitude, currentPosition.longitude);
   }
 
-  Future<Map<String, dynamic>> markClockOut() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-
-    int empId = preferences.getInt('id');
-
-    final Map<String, dynamic> clockOutData = {
-      'emp_id': empId,
-      'date_time': DateTime.now().toString(),
-      'time': DateTime.now().toString(),
-      'type': 'clock-out',
-      'location': _currentAddress,
-      'currunt_lat': currentPosition.latitude,
-      'currunt_long': currentPosition.longitude,
-    };
-    var token = preferences.getString('token');
-
-    Response response = await post(
-      Utils.attendance_url,
-      body: json.encode(clockOutData),
-      headers: {'Content-Type': 'application/json', 'accept': 'application/json', 'Authorization': 'Bearer $token'},
-    );
-    var url = Utils.attendance_url;
-    print(url);
-    var result;
-    if (response.statusCode == 200) {
-      setBusy(true);
-      final Map<String, dynamic> responseData = json.decode(response.body);
-      var logData = responseData;
-      AttendanceDetail authUser = AttendanceDetail.fromJson(logData);
-
-      await SharedPrefService.storeString('date_time', authUser.employeeAttendanceDetail.dateTime.toString());
-      await SharedPrefService.storeString('type', authUser.employeeAttendanceDetail.type);
-
-      result = {'status': true, 'message': 'code ${response.statusCode},${response.body} '};
-      print('success: $result');
-      setBusy(false);
-    } else {
-      print(response.body);
-      result = {'status': false, 'message': 'code ${response.statusCode},${response.body} '};
-      print('fail: $result');
-    }
-    return jsonDecode(response.body);
+  markClockOut() async {
+    await _attendanceService.markLog(
+        Utils.CLOCKOUT, _currentAddress, currentPosition.latitude, currentPosition.longitude);
   }
 
-  Future<Map<String, dynamic>> markClockTimeOut() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-
-    int empId = preferences.getInt('id');
-
-    final Map<String, dynamic> timeOutData = {
-      'emp_id': empId,
-      'date_time': DateTime.now().toString(),
-      'time': DateTime.now().toString(),
-      'type': 'break',
-      'location': _currentAddress,
-      'currunt_lat': currentPosition.latitude,
-      'currunt_long': currentPosition.longitude,
-    };
-    var token = preferences.getString('token');
-    Response response = await post(
-      Utils.attendance_url,
-      body: json.encode(timeOutData),
-      headers: {'Content-Type': 'application/json', 'accept': 'application/json', 'Authorization': 'Bearer $token'},
-    );
-    var url = Utils.attendance_url;
-    print(url);
-    var result;
-    if (response.statusCode == 200) {
-      setBusy(true);
-      final Map<String, dynamic> responseData = json.decode(response.body);
-      var logData = responseData;
-      AttendanceDetail authUser = AttendanceDetail.fromJson(logData);
-
-      await SharedPrefService.storeString('date_time', authUser.employeeAttendanceDetail.dateTime.toString());
-      await SharedPrefService.storeString('type', authUser.employeeAttendanceDetail.type);
-
-      result = {'status': true, 'message': 'code ${response.statusCode},${response.body} '};
-      print('success: $result');
-      setBusy(false);
-    } else {
-      print(response.body);
-      result = {'status': false, 'message': 'code ${response.statusCode},${response.body} '};
-      print('fail: $result');
-    }
-    return jsonDecode(response.body);
+  markClockTimeOut() async {
+    await _attendanceService.markLog(
+        Utils.TIMEOUT, _currentAddress, currentPosition.latitude, currentPosition.longitude);
   }
 }

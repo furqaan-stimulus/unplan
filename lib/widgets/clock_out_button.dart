@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:unplan/enum/log_type.dart';
 import 'package:unplan/utils/text_styles.dart';
+import 'package:unplan/utils/utils.dart';
 import 'package:unplan/utils/view_color.dart';
 
 class ClockOutButton extends StatefulWidget {
@@ -26,7 +27,7 @@ class _ClockOutButtonState extends State<ClockOutButton> {
       child: FlatButton(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         child: Text(
-          "SIGN OFF",
+          Utils.buttonSignOff,
           style: TextStyles.buttonTextStyle1,
         ),
         textColor: Colors.white,

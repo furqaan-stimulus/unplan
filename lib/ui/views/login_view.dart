@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'package:unplan/utils/text_styles.dart';
+import 'package:unplan/utils/utils.dart';
 import 'package:unplan/utils/view_color.dart';
 import 'package:unplan/view_models/login_view_model.dart';
 
@@ -63,16 +64,16 @@ class _LoginViewState extends State<LoginView> {
           child: Column(
             children: [
               Container(
-                height: MediaQuery.of(context).size.height / 3.4,
+                height: MediaQuery.of(context).size.height / 3.5,
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(top: 155.0),
+                        padding: const EdgeInsets.only(top: 150.0),
                         child: Text(
-                          'login',
+                          Utils.LOGIN,
                           style: TextStyles.loginTitle,
                         ),
                       ),
@@ -89,14 +90,14 @@ class _LoginViewState extends State<LoginView> {
                   children: [
                     Form(
                       key: _formKey,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                       child: Container(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 35.0, right: 35.0),
+                              padding: const EdgeInsets.only(left: 35.0, right: 35.0),
                               child: Container(
                                 width: double.infinity,
                                 decoration: BoxDecoration(
@@ -104,8 +105,7 @@ class _LoginViewState extends State<LoginView> {
                                   color: ViewColor.text_grey_color,
                                 ),
                                 child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(
-                                      20.0, 4.0, 10.0, 4.0),
+                                  padding: const EdgeInsets.fromLTRB(20.0, 4.0, 10.0, 4.0),
                                   child: TextFormField(
                                     style: TextStyles.emailTextStyle,
                                     focusNode: emailFocus,
@@ -118,13 +118,13 @@ class _LoginViewState extends State<LoginView> {
                                     controller: emailController,
                                     keyboardType: TextInputType.emailAddress,
                                     decoration: InputDecoration(
-                                      hintText: 'you.stimulus@gmail.com',
+                                      hintText: Utils.hintEmail,
                                       hintStyle: TextStyles.emailHintStyle,
                                       border: InputBorder.none,
                                     ),
                                     validator: (value) {
                                       if (value.isEmpty) {
-                                        return 'Enter Email Id';
+                                        return Utils.msgEmail;
                                       }
                                       return null;
                                     },
@@ -136,8 +136,7 @@ class _LoginViewState extends State<LoginView> {
                               height: 10.0,
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 35.0, right: 35.0),
+                              padding: const EdgeInsets.only(left: 35.0, right: 35.0),
                               child: Container(
                                 width: double.infinity,
                                 decoration: BoxDecoration(
@@ -145,8 +144,7 @@ class _LoginViewState extends State<LoginView> {
                                   color: ViewColor.text_grey_color,
                                 ),
                                 child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(
-                                      20.0, 4.0, 6.0, 4.0),
+                                  padding: const EdgeInsets.fromLTRB(20.0, 4.0, 6.0, 4.0),
                                   child: TextFormField(
                                     style: TextStyles.passwordTextStyle,
                                     focusNode: pwd,
@@ -154,21 +152,20 @@ class _LoginViewState extends State<LoginView> {
                                     textInputAction: TextInputAction.next,
                                     onFieldSubmitted: (term) {
                                       pwd.unfocus();
-                                      FocusScope.of(context)
-                                          .requestFocus(submitFocus);
+                                      FocusScope.of(context).requestFocus(submitFocus);
                                     },
                                     controller: passwordController,
                                     obscureText: !this._obscureText,
                                     obscuringCharacter: "*",
                                     keyboardType: TextInputType.text,
                                     decoration: InputDecoration(
-                                      hintText: 'password',
+                                      hintText: Utils.hintPassword,
                                       hintStyle: TextStyles.passwordHintStyle,
                                       border: InputBorder.none,
                                     ),
                                     validator: (value) {
                                       if (value.isEmpty) {
-                                        return 'Password is required';
+                                        return Utils.msgPassword;
                                       }
                                       return null;
                                     },
@@ -180,27 +177,23 @@ class _LoginViewState extends State<LoginView> {
                               height: 10,
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 35.0, right: 35.0),
+                              padding: const EdgeInsets.only(left: 35.0, right: 35.0),
                               child: Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 width: double.infinity,
                                 child: FlatButton(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5)),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                                   focusNode: submitFocus,
                                   child: Text(
-                                    "employee login",
+                                    Utils.buttonLogin,
                                     style: TextStyles.buttonTextStyle1,
                                   ),
                                   textColor: Colors.white,
-                                  padding: const EdgeInsets.fromLTRB(
-                                      20.0, 14.0, 20.0, 14.0),
+                                  padding: const EdgeInsets.fromLTRB(20.0, 14.0, 20.0, 14.0),
                                   onPressed: () {
-                                    FocusManager.instance.primaryFocus
-                                        .unfocus();
+                                    FocusManager.instance.primaryFocus.unfocus();
                                     if (_formKey.currentState.validate()) {
                                       model.postLogin(
                                         emailController.text,
@@ -220,9 +213,9 @@ class _LoginViewState extends State<LoginView> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 80.0),
+                padding: const EdgeInsets.only(top: 70.0),
                 child: Container(
-                  height: MediaQuery.of(context).size.height / 5.5,
+                  height: MediaQuery.of(context).size.height / 5.6,
                   child: Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -230,15 +223,13 @@ class _LoginViewState extends State<LoginView> {
                       children: [
                         RichText(
                             text: TextSpan(children: <TextSpan>[
-                          TextSpan(text: 'un', style: TextStyles.loginTitle),
-                          TextSpan(
-                              text: 'plan',
-                              style: TextStyles.loginFooterTitle1),
+                          TextSpan(text: Utils.splashText0, style: TextStyles.loginTitle),
+                          TextSpan(text: Utils.splashText1, style: TextStyles.loginFooterTitle1),
                         ])),
                         Padding(
                           padding: const EdgeInsets.only(left: 4.0),
                           child: Text(
-                            "tracking businesses",
+                            Utils.splashText2,
                             style: TextStyles.loginFooterSubTitle,
                           ),
                         )

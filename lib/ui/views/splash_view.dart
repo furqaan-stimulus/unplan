@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:stacked/stacked.dart';
 import 'package:unplan/utils/text_styles.dart';
+import 'package:unplan/utils/utils.dart';
 import 'package:unplan/utils/view_color.dart';
 import 'package:unplan/view_models/splash_view_model.dart';
 
@@ -34,17 +34,15 @@ class SplashView extends StatelessWidget {
                       RichText(
                         text: TextSpan(
                           children: <TextSpan>[
-                            TextSpan(
-                                text: 'un', style: TextStyles.splashTitle1),
-                            TextSpan(
-                                text: 'plan', style: TextStyles.splashTitle2),
+                            TextSpan(text: Utils.splashText0, style: TextStyles.splashTitle1),
+                            TextSpan(text: Utils.splashText1, style: TextStyles.splashTitle2),
                           ],
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 4.0),
                         child: Text(
-                          "tracking businesses",
+                          Utils.splashText2,
                           style: TextStyles.splashSubTitle,
                         ),
                       )

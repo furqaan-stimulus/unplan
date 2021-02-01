@@ -1,31 +1,20 @@
-import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
-import 'package:unplan/enum/log_type.dart';
+import 'package:unplan/app/locator.dart';
+import 'package:unplan/model/attendance_log.dart';
+import 'package:unplan/services/attendance_service.dart';
 
 class HomeDataViewModel extends BaseViewModel {
-  String _logType;
+  final AttendanceService _attendanceService = getIt<AttendanceService>();
 
-  String get logType => _logType;
+  List<EmployeeDetail> _logs = [];
 
-  DateTime _lastDateTime;
+  List<EmployeeDetail> get logs => _logs;
 
-  DateTime get lastDateTime => _lastDateTime;
-
-  Future getLogType() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    _logType = preferences.getString('type');
-    notifyListeners();
-    return _logType;
-  }
-
-  Future getLastDateTime() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    String tiny = preferences.getString('date_time');
-    var p = DateTime.parse(tiny);
-    var format = DateFormat('h:mm a, d MMM');
-    var s = format.format(p);
-    notifyListeners();
-    return s;
+  initialise() {
+    setBusy(true);
+    _attendanceService.getLogToday().listen((event) {
+      _logs = event;
+      setBusy(false);
+    });
   }
 }
