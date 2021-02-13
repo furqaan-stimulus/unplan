@@ -4,6 +4,7 @@ import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unplan/model/address_detail.dart';
 import 'package:unplan/model/attendance_log.dart';
+import 'package:unplan/model/employee_information.dart';
 import 'package:unplan/model/leave_list_log.dart';
 import 'package:unplan/model/personal_information.dart';
 import 'package:unplan/model/today_log.dart';
@@ -30,6 +31,15 @@ class AttendanceService {
   List<AddressDetail> _addDetail = [];
 
   List<AddressDetail> get addDetail => _addDetail;
+
+  List<EmployeeInformation> _getEmpInfo = [];
+
+  List<EmployeeInformation> get getEmpInfo => _getEmpInfo;
+
+  StreamController<List<EmployeeInformation>> _getEmpInfoStrmCntl =
+      StreamController<List<EmployeeInformation>>.broadcast();
+
+  Stream<List<EmployeeInformation>> get _getEmpInfoStrm => _getEmpInfoStrmCntl.stream;
 
   StreamController<List<AttendanceLog>> _logforToday = StreamController<List<AttendanceLog>>.broadcast();
 
@@ -79,7 +89,6 @@ class AttendanceService {
       final Map<String, dynamic> responseData = json.decode(response.body);
       var logData = responseData;
       AttendanceLog authUser = AttendanceLog.fromJson(logData);
-      print("log data: $authUser");
       await SharedPrefService.storeString('date_time', authUser.dateTime.toString());
       await SharedPrefService.storeString('type', authUser.type);
       result = {'status': true, 'message': 'code ${response.statusCode},${response.body} '};
@@ -162,30 +171,32 @@ class AttendanceService {
   }
 
   Stream<List<TodayLog>> getTodayLogList() {
-    Future.delayed(const Duration(microseconds: 250), () async {
-      SharedPreferences preferences = await SharedPreferences.getInstance();
-      String authToken = preferences.getString('token');
-      int empId = preferences.getInt('id');
-      Response response;
-      DateTime now = DateTime.now();
+    Future.delayed(
+      const Duration(microseconds: 250),
+      () async {
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+        String authToken = preferences.getString('token');
+        int empId = preferences.getInt('id');
+        Response response;
+        DateTime now = DateTime.now();
 
-      var queryParameters = {
-        'date': DateTime(now.year, now.month, now.day).toString(),
-      };
-      var uri = Uri.https('dev.stimulusco.com', '/api/attendenceByDate/$empId', queryParameters);
-      if (authToken != null)
-        response = await get(
-          uri,
-          headers: {'Authorization': 'Bearer $authToken'},
-        );
-      if (response != null) {
-        // print("list: ${json.decode(response.body)['Attendence Data']}");
-        _logList = (json.decode(response.body)['Attendence Data'] as List).map((e) => TodayLog.fromJson(e)).toList();
-        _logListToday.sink.add(_logList);
-      } else {
-        _logListToday.sink.add([]);
-      }
-    });
+        var queryParameters = {
+          'date': DateTime(now.year, now.month, now.day).toString(),
+        };
+        var uri = Uri.https('dev.stimulusco.com', '/api/attendenceByDate/$empId', queryParameters);
+        if (authToken != null)
+          response = await get(
+            uri,
+            headers: {'Authorization': 'Bearer $authToken'},
+          );
+        if (response != null) {
+          _logList = (json.decode(response.body)['Attendence Data'] as List).map((e) => TodayLog.fromJson(e)).toList();
+          _logListToday.sink.add(_logList);
+        } else {
+          _logListToday.sink.add([]);
+        }
+      },
+    );
     return _logListToday.stream;
   }
 
@@ -239,5 +250,27 @@ class AttendanceService {
       }
     });
     return _leaveListCntl.stream;
+  }
+
+  Stream<List<EmployeeInformation>> getEmployeeInfo() {
+    Future.delayed(const Duration(microseconds: 250), () async {
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      String authToken = preferences.getString('token');
+      int empId = preferences.getInt('id');
+      Response response;
+      if (authToken != null)
+        response = await get(
+          Utils.get_employee_info_url + '$empId',
+          headers: {'Authorization': 'Bearer $authToken'},
+        );
+      if (response != null) {
+        _getEmpInfo =
+            (json.decode(response.body)['Employee Leave Info'] as List).map((e) => EmployeeInformation.fromJson(e)).toList();
+        _getEmpInfoStrmCntl.sink.add(_getEmpInfo);
+      } else {
+        _getEmpInfoStrmCntl.sink.add([]);
+      }
+    });
+    return _getEmpInfoStrmCntl.stream;
   }
 }

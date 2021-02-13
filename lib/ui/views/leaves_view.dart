@@ -25,6 +25,9 @@ class _LeavesViewState extends State<LeavesView> {
   Widget build(BuildContext context) {
     return ViewModelBuilder<LeavesViewModel>.reactive(
       viewModelBuilder: () => LeavesViewModel(),
+      onModelReady: (model) {
+        model.initialise();
+      },
       builder: (context, model, child) {
         return Scaffold(
           backgroundColor: ViewColor.background_white_color,
@@ -120,7 +123,11 @@ class _LeavesViewState extends State<LeavesView> {
                                 height: 40,
                                 child: Center(
                                   child: Text(
-                                    '04',
+                                    (model.hasError)
+                                        ? ''
+                                        : (model.getEmpInfo.length == 0)
+                                            ? ''
+                                            : "${model.getEmpInfo.first.scLeave}",
                                     style: TextStyles.leaveText,
                                   ),
                                 ),
@@ -161,7 +168,11 @@ class _LeavesViewState extends State<LeavesView> {
                                 height: 40,
                                 child: Center(
                                   child: Text(
-                                    '03',
+                                    (model.hasError)
+                                        ? ''
+                                        : (model.getEmpInfo.length == 0)
+                                            ? ''
+                                            : "${model.getEmpInfo.first.scLeave}",
                                     style: TextStyles.leaveText,
                                   ),
                                 ),

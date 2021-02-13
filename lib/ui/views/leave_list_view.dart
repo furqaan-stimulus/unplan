@@ -20,7 +20,10 @@ class _LeaveListViewState extends State<LeaveListView> {
   Widget build(BuildContext context) {
     return ViewModelBuilder<LeaveListViewModel>.reactive(
       viewModelBuilder: () => LeaveListViewModel(),
-      onModelReady: (model) => model.initialise(),
+      onModelReady: (model) {
+        model.initialise();
+        model.getEmpInfoList();
+      },
       builder: (context, model, child) => Scaffold(
         key: _scaffoldState,
         backgroundColor: ViewColor.background_white_color,
@@ -115,7 +118,11 @@ class _LeaveListViewState extends State<LeaveListView> {
                               height: 40,
                               child: Center(
                                 child: Text(
-                                  '04',
+                                  (model.hasError)
+                                      ? ''
+                                      : (model.getEmpInfo.length == 0)
+                                          ? ''
+                                          : '${model.getEmpInfo.first.scLeave}',
                                   style: TextStyles.leaveText,
                                 ),
                               ),
@@ -156,7 +163,11 @@ class _LeaveListViewState extends State<LeaveListView> {
                               height: 40,
                               child: Center(
                                 child: Text(
-                                  '03',
+                                  (model.hasError)
+                                      ?''
+                                      : (model.getEmpInfo.length == 0)
+                                          ? ''
+                                          : '${model.getEmpInfo.first.sickLeave}',
                                   style: TextStyles.leaveText,
                                 ),
                               ),
