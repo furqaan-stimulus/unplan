@@ -34,9 +34,11 @@ class _ClockOutButtonState extends State<ClockOutButton> {
         padding: EdgeInsets.all(16),
         onPressed: widget.pressed
             ? () {
-                widget.onPressed();
+
               }
-            : () {},
+            : () {
+          widget.onPressed();
+        },
         color: ViewColor.button_green_color,
       ),
     );

@@ -14,4 +14,7 @@ class ViewColor {
   static const Color text_green_color = Color.fromRGBO(27, 153, 24, 1);
   static const Color text_red_color = Color.fromRGBO(203, 21, 21, 1);
   static const Color text_grey_footer_color = Color.fromRGBO(193,193,193,1);
+  static const Color text_grey_drawer_footer_color = Color.fromRGBO(157,157,157,1);
+  static const Color text_green_2_color = Color.fromRGBO(145,177,13,1);
+  static const Color text_black_variant_color = Color.fromRGBO(85,85,85,1);
 }

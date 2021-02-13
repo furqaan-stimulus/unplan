@@ -33,10 +33,10 @@ class _BreakButtonState extends State<BreakButton> {
         textColor: Colors.white,
         padding: EdgeInsets.all(16),
         onPressed: widget.pressed
-            ? () {
+            ? () {}
+            : () {
                 widget.onPressed();
-              }
-            : () {},
+              },
         color: ViewColor.background_purple_color,
       ),
     );

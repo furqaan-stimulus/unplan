@@ -4,6 +4,7 @@ class Utils {
   static const splashText2 = 'tracking businesses';
   static const hintEmail = 'you.stimulus@gmail.com';
   static const msgEmail = 'Enter Email Id';
+  static const msgReason = 'Enter Reason for Leave';
   static const hintPassword = 'password';
   static const msgPassword = 'Password is required';
   static const buttonLogin = 'employee login';
@@ -14,13 +15,17 @@ class Utils {
   static const COMMA = ',';
   static const Hrs = ' Hrs';
   static const last = 'Last ';
-  static const homeIn = 'Clock-In :';
-  static const homeOut = 'Clock-Out :';
+  static const homeIn = 'Clock-In : ';
+  static const homeOut = 'Clock-Out : ';
   static const hourToday = 'Hours Today: ';
   static const avgMonth = 'Avg. This Month: ';
   static const officeLocation = 'At Stimulus HQ';
   static const homeLocation = 'Working From Home';
-  static const unknownLocation = 'At Unknown Place';
+  static const unknownLocation = 'At Unknown Place!!!';
+  static const drawerText = 'personal info';
+  static const drawerText1 = 'employee info';
+  static const drawerText2 = 'apply for leave';
+  static const drawerText3 = 'leave applications';
   static const home = 'Home';
   static const office = 'Office';
   static const unknown = 'Unknown';
@@ -45,13 +50,22 @@ class Utils {
   static const statSub5 = 'CL';
   static const statSub6 = 'SL';
 
-
   // Api calls
   static const LOGIN = 'login';
+  static const deviceInfo = 'device_info/';
+  static const addressDetails = 'address_info_get/';
+  static const personalInfo = 'personal_info/';
   static const ADD_ATTENDANCE = 'attendenceDetail';
   static const GET_ATTENDANCE_DETAIL = 'attendenceDetailget/';
+  static const POST_LEAVE_INFO = 'leave_info/';
+  static const GET_LEAVE_INFO = 'emp_leave_info/';
   static const base_url = 'https://dev.stimulusco.com/api/';
   static const login_url = base_url + LOGIN;
   static const attendance_url = base_url + ADD_ATTENDANCE;
   static const attendance_log_url = base_url + GET_ATTENDANCE_DETAIL;
+  static const device_info_url = base_url + deviceInfo;
+  static const address_info_url = base_url + addressDetails;
+  static const personal_info_url = base_url + personalInfo;
+  static const post_leave_url = base_url + POST_LEAVE_INFO;
+  static const get_leave_url = base_url + GET_LEAVE_INFO;
 }

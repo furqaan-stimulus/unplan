@@ -249,4 +249,132 @@ class TextStyles {
     fontSize: 24,
     color: ViewColor.background_purple_color,
   );
+
+  static const TextStyle drawerFooterText = TextStyle(
+    fontFamily: KFontFam,
+    package: _kFontPkg,
+    fontStyle: FontStyle.normal,
+    fontWeight: FontWeight.normal,
+    fontSize: 12,
+    color: ViewColor.text_grey_drawer_footer_color,
+  );
+
+  static const TextStyle personalPageText = TextStyle(
+    fontFamily: KFontFam,
+    package: _kFontPkg,
+    fontStyle: FontStyle.normal,
+    fontWeight: FontWeight.normal,
+    fontSize: 24,
+    color: ViewColor.text_green_2_color,
+  );
+
+  static const TextStyle personalPageText2 = TextStyle(
+    fontFamily: KFontFam,
+    package: _kFontPkg,
+    fontStyle: FontStyle.normal,
+    fontWeight: FontWeight.bold,
+    fontSize: 18,
+    color: ViewColor.text_black_variant_color,
+  );
+
+  static const TextStyle personalPageText3 = TextStyle(
+    fontFamily: KFontFam,
+    package: _kFontPkg,
+    fontStyle: FontStyle.normal,
+    fontWeight: FontWeight.normal,
+    fontSize: 14,
+    color: ViewColor.text_black_variant_color,
+  );
+
+  static const TextStyle personalPageText4 = TextStyle(
+    fontFamily: KFontFam,
+    package: _kFontPkg,
+    fontStyle: FontStyle.normal,
+    fontWeight: FontWeight.normal,
+    fontSize: 12,
+    color: ViewColor.text_pink_color,
+  );
+  static const TextStyle personalPageText5 = TextStyle(
+    fontFamily: KFontFam,
+    package: _kFontPkg,
+    fontStyle: FontStyle.normal,
+    fontWeight: FontWeight.normal,
+    fontSize: 12,
+    color: ViewColor.text_grey_drawer_footer_color,
+  );
+
+  static const TextStyle leaveText = TextStyle(
+    fontFamily: KFontFam,
+    package: _kFontPkg,
+    fontWeight: FontWeight.bold,
+    fontStyle: FontStyle.normal,
+    fontSize: 14,
+    letterSpacing: 0.5,
+    color: ViewColor.text_grey_drawer_footer_color,
+  );
+  static const TextStyle leaveText1 = TextStyle(
+    fontFamily: KFontFam,
+    package: _kFontPkg,
+    fontWeight: FontWeight.bold,
+    fontStyle: FontStyle.normal,
+    fontSize: 14,
+    letterSpacing: 0.5,
+    color: ViewColor.text_white_color,
+  );
+
+  static const TextStyle leaveText2 = TextStyle(
+    fontFamily: KFontFam,
+    package: _kFontPkg,
+    fontWeight: FontWeight.normal,
+    fontStyle: FontStyle.normal,
+    fontSize: 14,
+    color: ViewColor.background_purple_color,
+  );
+
+  static const TextStyle leaveText3 = TextStyle(
+    fontFamily: KFontFam,
+    package: _kFontPkg,
+    fontWeight: FontWeight.bold,
+    fontStyle: FontStyle.normal,
+    fontSize: 14,
+    letterSpacing: 0.5,
+    color: ViewColor.text_grey_footer_color,
+  );
+
+  static const TextStyle leaveText4 = TextStyle(
+    fontFamily: KFontFam,
+    package: _kFontPkg,
+    fontWeight: FontWeight.w600,
+    fontSize: 14,
+    fontStyle: FontStyle.normal,
+    letterSpacing: 0.65,
+    color: ViewColor.text_black_color,
+  );
+
+  static const TextStyle leaveListText = TextStyle(
+    fontFamily: KFontFam,
+    package: _kFontPkg,
+    fontStyle: FontStyle.normal,
+    fontWeight: FontWeight.normal,
+    fontSize: 13,
+    color: ViewColor.text_black_variant_color,
+  );
+
+  static const TextStyle leaveListText1 = TextStyle(
+    fontFamily: KFontFam,
+    package: _kFontPkg,
+    fontStyle: FontStyle.normal,
+    fontWeight: FontWeight.normal,
+    fontSize: 11,
+    color: ViewColor.text_green_2_color,
+  );
+
+  static const TextStyle leaveListText2 = TextStyle(
+    fontFamily: KFontFam,
+    package: _kFontPkg,
+    fontStyle: FontStyle.normal,
+    fontWeight: FontWeight.normal,
+    fontSize: 11,
+    color: ViewColor.text_red_color,
+  );
 }

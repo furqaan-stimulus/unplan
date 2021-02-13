@@ -49,23 +49,23 @@ class _HomeStatsViewState extends State<HomeStatsView> {
                       ),
                     ],
                   ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        Utils.statSub2,
-                        style: TextStyles.bottomTextStyle2,
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        '13',
-                        style: TextStyles.homeText2,
-                      ),
-                    ],
-                  ),
+                  // Column(
+                  //   mainAxisAlignment: MainAxisAlignment.start,
+                  //   crossAxisAlignment: CrossAxisAlignment.start,
+                  //   children: [
+                  //     Text(
+                  //       Utils.statSub2,
+                  //       style: TextStyles.bottomTextStyle2,
+                  //     ),
+                  //     SizedBox(
+                  //       height: 10,
+                  //     ),
+                  //     Text(
+                  //       '13',
+                  //       style: TextStyles.homeText2,
+                  //     ),
+                  //   ],
+                  // ),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
