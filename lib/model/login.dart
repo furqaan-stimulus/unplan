@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final login = loginFromJson(jsonString);
-
 import 'dart:convert';
 
 import 'package:unplan/model/user_detail.dart';

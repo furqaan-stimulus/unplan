@@ -377,4 +377,13 @@ class TextStyles {
     fontSize: 11,
     color: ViewColor.text_red_color,
   );
+
+  static const TextStyle leaveMessages = TextStyle(
+    fontFamily: KFontFam,
+    package: _kFontPkg,
+    fontStyle: FontStyle.normal,
+    fontWeight: FontWeight.normal,
+    fontSize: 13,
+    color: ViewColor.text_pink_color,
+  );
 }

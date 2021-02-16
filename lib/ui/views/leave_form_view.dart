@@ -1,4 +1,3 @@
-import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'package:unplan/utils/date_time_format.dart';
@@ -30,6 +29,10 @@ class _LeaveFormViewState extends State<LeaveFormView> {
   FocusNode startFocus;
   FocusNode endFocus;
   FocusNode typeFocus;
+
+  bool showFailMessage = false;
+  bool showSuccessMessage = false;
+  bool cutOffMessage = false;
 
   @override
   void initState() {
@@ -64,6 +67,8 @@ class _LeaveFormViewState extends State<LeaveFormView> {
         body: GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();
+            showSuccessMessage = false;
+            showFailMessage = false;
           },
           child: Container(
             child: SingleChildScrollView(
@@ -124,22 +129,22 @@ class _LeaveFormViewState extends State<LeaveFormView> {
                                       ),
                                     ),
                                     onTap: () {
-                                      if (model.hasError) {
-                                        print("prob: error");
-                                      } else if (model.getEmpInfo.length == 0) {
-                                        print("prob: null");
-                                      } else {
-                                        var prob = model.getEmpInfo.first.probetion;
-                                        print("prob: $prob");
-                                        var probDate = DateTime(
-                                            DateTime.now().year, DateTime.now().month + prob, DateTime.now().day);
-                                        print("probDate: $probDate");
-                                        FocusManager.instance.primaryFocus.unfocus();
-                                        var diff = selectEndDate.difference(selectStartDate).inDays;
-                                        print("no. of days: $diff");
-                                        var inMonth = probDate.difference(DateTime.now()).inDays;
-                                        print("inMonth: $inMonth");
-                                      }
+                                      // if (model.hasError) {
+                                      //   print("prob: error");
+                                      // } else if (model.getEmpInfo.length == 0) {
+                                      //   print("prob: null");
+                                      // } else {
+                                      //   var prob = model.getEmpInfo.first.probetion;
+                                      //   print("prob: $prob");
+                                      //   var probDate = DateTime(
+                                      //       DateTime.now().year, DateTime.now().month + prob, DateTime.now().day);
+                                      //   print("probDate: $probDate");
+                                      //   FocusManager.instance.primaryFocus.unfocus();
+                                      //   var diff = selectEndDate.difference(selectStartDate).inDays;
+                                      //   print("no. of days: $diff");
+                                      //   var inMonth = probDate.difference(DateTime.now()).inDays;
+                                      //   print("inMonth: $inMonth");
+                                      // }
                                       _selectStartDate(context);
                                     },
                                   ),
@@ -284,9 +289,6 @@ class _LeaveFormViewState extends State<LeaveFormView> {
                                           border: InputBorder.none,
                                         ),
                                         validator: (value) {
-                                          if (!reasonFocus.hasFocus) {
-                                            return null;
-                                          }
                                           if (value.isEmpty) {
                                             return Utils.msgReason;
                                           }
@@ -300,7 +302,37 @@ class _LeaveFormViewState extends State<LeaveFormView> {
                             ],
                           ),
                           SizedBox(
-                            height: 50,
+                            height: 15,
+                          ),
+                          Visibility(
+                            visible: showSuccessMessage,
+                            child: Container(
+                              child: Text(
+                                'Application Submitted Successfully!',
+                                style: TextStyles.leaveMessages,
+                              ),
+                            ),
+                          ),
+                          Visibility(
+                            visible: showFailMessage,
+                            child: Container(
+                              child: Text(
+                                'Application Submission Failed!',
+                                style: TextStyles.leaveMessages,
+                              ),
+                            ),
+                          ),
+                          Visibility(
+                            visible: cutOffMessage,
+                            child: Container(
+                              child: Text(
+                                'You are applying past cut-off time!',
+                                style: TextStyles.leaveMessages,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 15,
                           ),
                           Container(
                             decoration: BoxDecoration(
@@ -318,35 +350,32 @@ class _LeaveFormViewState extends State<LeaveFormView> {
                               padding: const EdgeInsets.fromLTRB(20.0, 14.0, 20.0, 14.0),
                               onPressed: () {
                                 var diff = selectEndDate.difference(selectStartDate).inDays;
-                                if (_formKey.currentState.validate()) {
-                                  model.postLeave(_currentType.toString(), selectStartDate.toString(),
-                                      selectEndDate.toString(), reasonController.text, diff);
-                                  reasonController.clear();
-                                  Flushbar(
-                                    messageText: Center(
-                                      child: Text(
-                                        "Your leave is Submitted",
-                                        style: TextStyles.notificationTextStyle1,
-                                      ),
-                                    ),
-                                    backgroundColor: ViewColor.notification_green_color,
-                                    flushbarPosition: FlushbarPosition.TOP,
-                                    flushbarStyle: FlushbarStyle.FLOATING,
-                                    duration: Duration(seconds: 2),
-                                  )..show(context);
+                                if (reasonController.text.isEmpty) {
+                                  showFailMessage = true;
+                                  Future.delayed(const Duration(seconds: 5), () {
+                                    setState(() {
+                                      showFailMessage = false;
+                                    });
+                                  });
                                 } else {
-                                  Flushbar(
-                                    messageText: Center(
-                                      child: Text(
-                                        "Something went wrong",
-                                        style: TextStyles.notificationTextStyle1,
-                                      ),
-                                    ),
-                                    backgroundColor: ViewColor.text_black_color,
-                                    flushbarPosition: FlushbarPosition.TOP,
-                                    flushbarStyle: FlushbarStyle.FLOATING,
-                                    duration: Duration(seconds: 2),
-                                  )..show(context);
+                                  if (_formKey.currentState.validate()) {
+                                    model.postLeave(_currentType.toString(), selectStartDate.toString(),
+                                        selectEndDate.toString(), reasonController.text, diff);
+                                    reasonController.clear();
+                                    showSuccessMessage = true;
+                                    Future.delayed(const Duration(seconds: 5), () {
+                                      setState(() {
+                                        showSuccessMessage = false;
+                                      });
+                                    });
+                                  } else {
+                                    showFailMessage = true;
+                                    Future.delayed(const Duration(seconds: 5), () {
+                                      setState(() {
+                                        showFailMessage = false;
+                                      });
+                                    });
+                                  }
                                 }
                               },
                               color: ViewColor.button_green_color,
@@ -364,18 +393,6 @@ class _LeaveFormViewState extends State<LeaveFormView> {
       ),
     );
   }
-
-
-  // _showMessages(BuildContext context) async{
-  //   var now = DateTime.now();
-  //   var start= DateTime(now.year, now.month, now.day + 2);
-  //   var diff = selectEndDate.difference(selectStartDate).inDays;
-  //   if(s == 2){
-  //
-  //   }
-  //
-  // }
-
 
   _selectStartDate(BuildContext context) async {
     var now = DateTime.now();
@@ -417,6 +434,30 @@ class _LeaveFormViewState extends State<LeaveFormView> {
     if (picked != null && picked != selectEndDate) {
       setState(() {
         selectEndDate = picked;
+      });
+    }
+    var totalDays = selectEndDate.difference(selectStartDate).inDays;
+    var twoDays = selectStartDate.difference(now).inDays;
+
+    if (totalDays == 0 && twoDays >= 1) {
+      print('if case 1');
+      print('if $twoDays');
+      print("if total: $totalDays");
+    } else if (totalDays == 1 && twoDays >= 9 || totalDays <= 4 && twoDays >= 9) {
+      print('if case 2');
+      print("if total: $totalDays");
+    } else if (totalDays >= 5 && twoDays >= 29) {
+      print('if case 3');
+      print("if total: $totalDays");
+    } else {
+      print('else case ');
+      print('else two: $twoDays');
+      print("else total: $totalDays");
+      cutOffMessage = true;
+      Future.delayed(const Duration(seconds: 5), () {
+        setState(() {
+          cutOffMessage = false;
+        });
       });
     }
   }
