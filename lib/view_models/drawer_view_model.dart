@@ -6,6 +6,7 @@ import 'package:unplan/app/router.gr.dart';
 
 class DrawerViewModel extends BaseViewModel {
   final NavigationService _navigationService = getIt<NavigationService>();
+  final DialogService _dialogService = getIt<DialogService>();
 
   String _name;
 
@@ -34,5 +35,19 @@ class DrawerViewModel extends BaseViewModel {
 
   Future navigateToLeavesListView() async {
     await _navigationService.navigateTo(Routes.leaveListView);
+  }
+
+  Future logout() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    var token = preferences.setString("token", null);
+    preferences.clear();
+    var response;
+    response = await _dialogService.showDialog(
+      title: 'Are You Sure',
+      description: 'Do You want to Logout?',
+      buttonTitle: 'Logout ',
+      cancelTitle: 'Cancel',
+    );
+    _navigationService.pushNamedAndRemoveUntil(Routes.loginView);
   }
 }

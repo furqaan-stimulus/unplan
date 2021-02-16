@@ -26,6 +26,7 @@ class Utils {
   static const drawerText1 = 'employee info';
   static const drawerText2 = 'apply for leave';
   static const drawerText3 = 'leave applications';
+  static const drawerText4 = 'logout';
   static const home = 'Home';
   static const office = 'Office';
   static const unknown = 'Unknown';

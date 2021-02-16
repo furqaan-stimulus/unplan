@@ -51,9 +51,12 @@ class _LeaveListItemState extends State<LeaveListItem> {
             style: TextStyles.leaveListText,
           ),
           (widget.log.status == "approved")
-              ? Text(
-                  widget.log.status == "approved" ? "Approved" : "",
-                  style: TextStyles.leaveListText1,
+              ? Padding(
+                  padding: const EdgeInsets.only(right: 22.0),
+                  child: Text(
+                    widget.log.status == "approved" ? "Approved" : "",
+                    style: TextStyles.leaveListText1,
+                  ),
                 )
               : Center(
                   child: Text(

@@ -26,21 +26,19 @@ class _LeaveFormViewState extends State<LeaveFormView> {
   String _currentType = 'Unpaid Leave';
   FocusNode reasonFocus;
   FocusNode submitFocus;
-  FocusNode startFocus;
-  FocusNode endFocus;
   FocusNode typeFocus;
 
   bool showFailMessage = false;
   bool showSuccessMessage = false;
   bool cutOffMessage = false;
+  bool beforeErrorMessage = false;
+  bool typeErrorMessage = false;
 
   @override
   void initState() {
     super.initState();
     reasonFocus = FocusNode();
     submitFocus = FocusNode();
-    startFocus = FocusNode();
-    endFocus = FocusNode();
     typeFocus = FocusNode();
   }
 
@@ -49,9 +47,7 @@ class _LeaveFormViewState extends State<LeaveFormView> {
     super.dispose();
     reasonFocus.dispose();
     submitFocus.dispose();
-    endFocus.dispose();
     typeFocus.dispose();
-    startFocus.dispose();
   }
 
   @override
@@ -66,6 +62,7 @@ class _LeaveFormViewState extends State<LeaveFormView> {
         backgroundColor: ViewColor.background_white_color,
         body: GestureDetector(
           onTap: () {
+            FocusManager.instance.primaryFocus.unfocus();
             FocusScope.of(context).unfocus();
             showSuccessMessage = false;
             showFailMessage = false;
@@ -129,22 +126,6 @@ class _LeaveFormViewState extends State<LeaveFormView> {
                                       ),
                                     ),
                                     onTap: () {
-                                      // if (model.hasError) {
-                                      //   print("prob: error");
-                                      // } else if (model.getEmpInfo.length == 0) {
-                                      //   print("prob: null");
-                                      // } else {
-                                      //   var prob = model.getEmpInfo.first.probetion;
-                                      //   print("prob: $prob");
-                                      //   var probDate = DateTime(
-                                      //       DateTime.now().year, DateTime.now().month + prob, DateTime.now().day);
-                                      //   print("probDate: $probDate");
-                                      //   FocusManager.instance.primaryFocus.unfocus();
-                                      //   var diff = selectEndDate.difference(selectStartDate).inDays;
-                                      //   print("no. of days: $diff");
-                                      //   var inMonth = probDate.difference(DateTime.now()).inDays;
-                                      //   print("inMonth: $inMonth");
-                                      // }
                                       _selectStartDate(context);
                                     },
                                   ),
@@ -219,7 +200,7 @@ class _LeaveFormViewState extends State<LeaveFormView> {
                                 children: [
                                   Container(
                                     width: 220,
-                                    height: 50,
+                                    height: 60,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(5),
                                       color: ViewColor.text_grey_color,
@@ -227,27 +208,54 @@ class _LeaveFormViewState extends State<LeaveFormView> {
                                     alignment: Alignment.bottomLeft,
                                     child: Padding(
                                       padding: const EdgeInsets.only(left: 10.0),
-                                      child: DropdownButtonHideUnderline(
-                                        child: DropdownButton<String>(
-                                          iconEnabledColor: ViewColor.text_grey_color,
-                                          iconDisabledColor: ViewColor.text_grey_color,
-                                          isExpanded: true,
-                                          elevation: 16,
-                                          items: type.map((type) {
-                                            return DropdownMenuItem(
-                                              child: Text(
-                                                '$type',
-                                                style: TextStyles.leaveText4,
+                                      child: Center(
+                                        child: Theme(
+                                          data: ThemeData(
+                                            canvasColor: ViewColor.text_grey_color,
+                                          ),
+                                          child: DropdownButtonFormField<String>(
+                                            iconEnabledColor: ViewColor.text_grey_color,
+                                            iconDisabledColor: ViewColor.text_grey_color,
+                                            isExpanded: true,
+                                            elevation: 16,
+                                            focusNode: typeFocus,
+                                            items: type.map((type) {
+                                              return DropdownMenuItem(
+                                                child: Text(
+                                                  '$type',
+                                                  style: TextStyles.leaveText4,
+                                                ),
+                                                value: type,
+                                              );
+                                            }).toList(),
+                                            onChanged: (String newValue) {
+                                              setState(() {
+                                                _currentType = newValue;
+                                              });
+                                            },
+                                            value: _currentType,
+                                            validator: (value) {
+                                              if (model.getEmpInfo.length == 0) {
+                                                return null;
+                                              } else if (model.getEmpInfo.first.paidLeave == 0 &&
+                                                  _currentType == "Paid Leave") {
+                                                return "you can\'t use paid leave(s)";
+                                              } else if (model.getEmpInfo.first.sickLeave == 0 &&
+                                                  _currentType == "Sick Leave") {
+                                                return "you can\'t use sick leave(s)";
+                                              }
+                                              return null;
+                                            },
+                                            decoration: InputDecoration(
+                                              errorStyle: TextStyles.leaveMessages,
+                                              enabledBorder: InputBorder.none,
+                                              border: OutlineInputBorder(
+                                                borderRadius: BorderRadius.circular(10),
                                               ),
-                                              value: type,
-                                            );
-                                          }).toList(),
-                                          onChanged: (String newValue) {
-                                            setState(() {
-                                              _currentType = newValue;
-                                            });
-                                          },
-                                          value: _currentType,
+                                              errorBorder: InputBorder.none,
+                                              focusedBorder: InputBorder.none,
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -284,13 +292,17 @@ class _LeaveFormViewState extends State<LeaveFormView> {
                                         focusNode: reasonFocus,
                                         maxLines: 5,
                                         enabled: true,
+                                        keyboardType: TextInputType.text,
                                         controller: reasonController,
                                         decoration: InputDecoration(
                                           border: InputBorder.none,
+                                          errorStyle: TextStyles.leaveMessages,
                                         ),
                                         validator: (value) {
                                           if (value.isEmpty) {
-                                            return Utils.msgReason;
+                                            Future.delayed(const Duration(seconds: 3), () {
+                                              return Utils.msgReason;
+                                            });
                                           }
                                           return null;
                                         },
@@ -331,6 +343,24 @@ class _LeaveFormViewState extends State<LeaveFormView> {
                               ),
                             ),
                           ),
+                          Visibility(
+                            visible: beforeErrorMessage,
+                            child: Container(
+                              child: Text(
+                                'You can\'t enter end date before the start date',
+                                style: TextStyles.leaveMessages,
+                              ),
+                            ),
+                          ),
+                          Visibility(
+                            visible: typeErrorMessage,
+                            child: Container(
+                              child: Text(
+                                'You don\'t have enough paid leaves!',
+                                style: TextStyles.leaveMessages,
+                              ),
+                            ),
+                          ),
                           SizedBox(
                             height: 15,
                           ),
@@ -350,31 +380,51 @@ class _LeaveFormViewState extends State<LeaveFormView> {
                               padding: const EdgeInsets.fromLTRB(20.0, 14.0, 20.0, 14.0),
                               onPressed: () {
                                 var diff = selectEndDate.difference(selectStartDate).inDays;
-                                if (reasonController.text.isEmpty) {
-                                  showFailMessage = true;
+                                if (selectEndDate.isBefore(selectStartDate)) {
+                                  beforeErrorMessage = true;
                                   Future.delayed(const Duration(seconds: 5), () {
                                     setState(() {
-                                      showFailMessage = false;
+                                      beforeErrorMessage = false;
                                     });
                                   });
                                 } else {
-                                  if (_formKey.currentState.validate()) {
-                                    model.postLeave(_currentType.toString(), selectStartDate.toString(),
-                                        selectEndDate.toString(), reasonController.text, diff);
+                                  if (reasonController.text.isEmpty) {
+                                    FocusManager.instance.primaryFocus.unfocus();
                                     reasonController.clear();
-                                    showSuccessMessage = true;
-                                    Future.delayed(const Duration(seconds: 5), () {
-                                      setState(() {
-                                        showSuccessMessage = false;
-                                      });
-                                    });
-                                  } else {
                                     showFailMessage = true;
                                     Future.delayed(const Duration(seconds: 5), () {
                                       setState(() {
                                         showFailMessage = false;
                                       });
                                     });
+                                  } else {
+                                    // if (model.getEmpInfo.first.paidLeave == 0 && _currentType == "Paid Leave") {
+                                    //   typeErrorMessage = true;
+                                    //   Future.delayed(const Duration(seconds: 5), () {
+                                    //     setState(() {
+                                    //       typeErrorMessage = false;
+                                    //     });
+                                    //   });
+                                    // }
+                                    if (_formKey.currentState.validate()) {
+                                      FocusManager.instance.primaryFocus.unfocus();
+                                      model.postLeave(_currentType.toString(), selectStartDate.toString(),
+                                          selectEndDate.toString(), reasonController.text, diff);
+                                      reasonController.clear();
+                                      showSuccessMessage = true;
+                                      Future.delayed(const Duration(seconds: 5), () {
+                                        setState(() {
+                                          showSuccessMessage = false;
+                                        });
+                                      });
+                                    } else {
+                                      showFailMessage = true;
+                                      Future.delayed(const Duration(seconds: 5), () {
+                                        setState(() {
+                                          showFailMessage = false;
+                                        });
+                                      });
+                                    }
                                   }
                                 }
                               },
@@ -401,6 +451,7 @@ class _LeaveFormViewState extends State<LeaveFormView> {
       initialDate: DateTime(now.year, now.month, now.day + 2),
       firstDate: DateTime(now.year, now.month, now.day + 2),
       lastDate: DateTime(2100),
+      selectableDayPredicate: (DateTime val) => (val.weekday == DateTime.sunday) ? false : true,
       helpText: 'Select start date of leave',
       builder: (context, child) {
         return Theme(
@@ -420,9 +471,10 @@ class _LeaveFormViewState extends State<LeaveFormView> {
     var now = DateTime.now();
     final DateTime picked = await showDatePicker(
       context: context,
-      initialDate: DateTime(now.year, now.month, now.day + 2),
-      firstDate: DateTime(now.year, now.month, now.day + 2),
+      initialDate: selectStartDate,
+      firstDate: selectStartDate,
       lastDate: DateTime(2100),
+      selectableDayPredicate: (DateTime val) => (val.weekday == DateTime.sunday) ? false : true,
       helpText: 'Select end date of leave',
       builder: (context, child) {
         return Theme(
@@ -439,26 +491,34 @@ class _LeaveFormViewState extends State<LeaveFormView> {
     var totalDays = selectEndDate.difference(selectStartDate).inDays;
     var twoDays = selectStartDate.difference(now).inDays;
 
-    if (totalDays == 0 && twoDays >= 1) {
-      print('if case 1');
-      print('if $twoDays');
-      print("if total: $totalDays");
-    } else if (totalDays == 1 && twoDays >= 9 || totalDays <= 4 && twoDays >= 9) {
-      print('if case 2');
-      print("if total: $totalDays");
-    } else if (totalDays >= 5 && twoDays >= 29) {
-      print('if case 3');
-      print("if total: $totalDays");
-    } else {
-      print('else case ');
-      print('else two: $twoDays');
-      print("else total: $totalDays");
-      cutOffMessage = true;
+    if (selectEndDate.isBefore(selectStartDate)) {
+      beforeErrorMessage = true;
       Future.delayed(const Duration(seconds: 5), () {
         setState(() {
-          cutOffMessage = false;
+          beforeErrorMessage = false;
         });
       });
+    } else {
+      if (totalDays == 0 && twoDays >= 1) {
+        print('0: $totalDays');
+        print('if case 1');
+      } else if (totalDays == 1 && twoDays >= 9 || totalDays <= 4 && twoDays >= 9) {
+        print('1 to 9: $totalDays');
+        print('if case 2');
+      } else if (totalDays >= 5 && twoDays >= 29) {
+        print('5: $totalDays');
+        print('if case 3');
+        print("if total: $totalDays");
+      } else {
+        print('else: $totalDays');
+        print('else case ');
+        cutOffMessage = true;
+        Future.delayed(const Duration(seconds: 5), () {
+          setState(() {
+            cutOffMessage = false;
+          });
+        });
+      }
     }
   }
 }

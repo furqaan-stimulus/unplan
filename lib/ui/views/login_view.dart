@@ -121,6 +121,7 @@ class _LoginViewState extends State<LoginView> {
                                       hintText: Utils.hintEmail,
                                       hintStyle: TextStyles.emailHintStyle,
                                       border: InputBorder.none,
+                                      errorStyle: TextStyles.leaveMessages,
                                     ),
                                     validator: (value) {
                                       if (value.isEmpty) {
@@ -162,6 +163,7 @@ class _LoginViewState extends State<LoginView> {
                                       hintText: Utils.hintPassword,
                                       hintStyle: TextStyles.passwordHintStyle,
                                       border: InputBorder.none,
+                                      errorStyle: TextStyles.leaveMessages,
                                     ),
                                     validator: (value) {
                                       if (value.isEmpty) {
