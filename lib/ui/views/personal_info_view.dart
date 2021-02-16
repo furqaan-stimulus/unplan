@@ -363,7 +363,7 @@ class _PersonalInfoViewState extends State<PersonalInfoView> {
 
   final Uri _uri = Uri(
     scheme: 'mailto',
-    path: 'furqaan.stimulus@gmail.com',
+    path: 'office@stimulusconsultancy.com',
     queryParameters: {
       'subject': 'Test mail from unplan app',
       'body': 'Add parameters',

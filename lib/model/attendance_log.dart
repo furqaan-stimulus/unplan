@@ -9,6 +9,7 @@ class AttendanceLog {
     this.location,
     this.totalHour,
     this.avgHour,
+    this.present,
     this.curruntLat,
     this.curruntLong,
     this.createdAt,
@@ -22,8 +23,9 @@ class AttendanceLog {
   DateTime date;
   String type;
   String location;
-  dynamic totalHour;
-  dynamic avgHour;
+  double totalHour;
+  double avgHour;
+  int present;
   String curruntLat;
   String curruntLong;
   DateTime createdAt;
@@ -37,8 +39,9 @@ class AttendanceLog {
         date: json["date"] == null ? null : DateTime.parse(json["date"]),
         type: json["type"],
         location: json["location"],
-        totalHour: json["total_hour"],
-        avgHour: json["avg_hour"],
+        totalHour: json["total_hour"]== null?null: json["total_hour"].toDouble(),
+        avgHour: json["avg_hour"]== null?null:json["avg_hour"].toDouble(),
+        present: json["present"],
         curruntLat: json["currunt_lat"],
         curruntLong: json["currunt_long"],
         createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
@@ -56,14 +59,10 @@ class AttendanceLog {
         "location": location,
         "total_hour": totalHour,
         "avg_hour": avgHour,
+        "present": present,
         "currunt_lat": curruntLat,
         "currunt_long": curruntLong,
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
       };
-
-// DateTime getDateWithMinutes() {
-//   int cltime = DateTime.parse(this.dateTime.toString()).millisecondsSinceEpoch;
-//   return DateTime.fromMillisecondsSinceEpoch(cltime);
-// }
 }

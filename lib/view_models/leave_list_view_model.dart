@@ -51,6 +51,4 @@ class LeaveListViewModel extends BaseViewModel {
       setBusy(false);
     });
   }
-
-
 }

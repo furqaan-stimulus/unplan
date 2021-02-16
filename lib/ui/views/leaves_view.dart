@@ -127,7 +127,7 @@ class _LeavesViewState extends State<LeavesView> {
                                         ? ''
                                         : (model.getEmpInfo.length == 0)
                                             ? ''
-                                            : "${model.getEmpInfo.first.scLeave}",
+                                            : "${model.getEmpInfo.first.paidLeave}",
                                     style: TextStyles.leaveText,
                                   ),
                                 ),
@@ -172,7 +172,7 @@ class _LeavesViewState extends State<LeavesView> {
                                         ? ''
                                         : (model.getEmpInfo.length == 0)
                                             ? ''
-                                            : "${model.getEmpInfo.first.scLeave}",
+                                            : "${model.getEmpInfo.first.sickLeave}",
                                     style: TextStyles.leaveText,
                                   ),
                                 ),
@@ -199,6 +199,7 @@ class _LeavesViewState extends State<LeavesView> {
                       ),
                       GestureDetector(
                         onTap: () {
+                          FocusManager.instance.primaryFocus.unfocus();
                           FocusScope.of(context).unfocus();
                           model.navigateTOLeaveListView();
                         },

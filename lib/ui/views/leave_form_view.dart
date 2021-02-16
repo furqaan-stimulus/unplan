@@ -1,6 +1,7 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
+import 'package:unplan/utils/date_time_format.dart';
 import 'package:unplan/utils/text_styles.dart';
 import 'package:unplan/utils/utils.dart';
 import 'package:unplan/utils/view_color.dart';
@@ -15,8 +16,8 @@ class _LeaveFormViewState extends State<LeaveFormView> {
   GlobalKey<ScaffoldState> _scaffoldState = GlobalKey<ScaffoldState>();
 
   final _formKey = GlobalKey<FormState>();
-  DateTime selectStartDate = DateTime.now();
-  DateTime selectEndDate = DateTime.now();
+  DateTime selectStartDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day + 2);
+  DateTime selectEndDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day + 2);
 
   final dateController = TextEditingController();
   final dateController1 = TextEditingController();
@@ -55,6 +56,9 @@ class _LeaveFormViewState extends State<LeaveFormView> {
     final bottom = MediaQuery.of(context).viewInsets.bottom;
     return ViewModelBuilder<LeaveFormViewModel>.reactive(
       viewModelBuilder: () => LeaveFormViewModel(),
+      onModelReady: (model) {
+        model.initialise();
+      },
       builder: (context, model, child) => Scaffold(
         backgroundColor: ViewColor.background_white_color,
         body: GestureDetector(
@@ -88,38 +92,56 @@ class _LeaveFormViewState extends State<LeaveFormView> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Container(
-                                    width: 220,
-                                    height: 50,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: ViewColor.text_grey_color,
-                                    ),
-                                    alignment: Alignment.centerRight,
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        _selectStartDate(context);
-                                      },
+                                  GestureDetector(
+                                    child: Container(
+                                      width: 220,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        color: ViewColor.text_grey_color,
+                                      ),
+                                      alignment: Alignment.centerRight,
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           Padding(
                                             padding: const EdgeInsets.only(left: 10.0),
                                             child: Text(
-                                              "${selectStartDate.toLocal()}".split(' ')[0],
+                                              DateTimeFormat.pickerDateFormat("${selectStartDate.toLocal()}"),
                                               style: TextStyles.leaveText4,
                                             ),
                                           ),
                                           Padding(
-                                            padding: const EdgeInsets.only(right: 15.0),
-                                            child: Icon(
-                                              Icons.calendar_today,
-                                              size: 40,
+                                            padding: const EdgeInsets.only(right: 10.0),
+                                            child: Image.asset(
+                                              'assets/calendar.png',
+                                              height: 40,
+                                              width: 40,
+                                              color: ViewColor.text_black_color,
                                             ),
                                           ),
                                         ],
                                       ),
                                     ),
+                                    onTap: () {
+                                      if (model.hasError) {
+                                        print("prob: error");
+                                      } else if (model.getEmpInfo.length == 0) {
+                                        print("prob: null");
+                                      } else {
+                                        var prob = model.getEmpInfo.first.probetion;
+                                        print("prob: $prob");
+                                        var probDate = DateTime(
+                                            DateTime.now().year, DateTime.now().month + prob, DateTime.now().day);
+                                        print("probDate: $probDate");
+                                        FocusManager.instance.primaryFocus.unfocus();
+                                        var diff = selectEndDate.difference(selectStartDate).inDays;
+                                        print("no. of days: $diff");
+                                        var inMonth = probDate.difference(DateTime.now()).inDays;
+                                        print("inMonth: $inMonth");
+                                      }
+                                      _selectStartDate(context);
+                                    },
                                   ),
                                 ],
                               ),
@@ -138,44 +160,40 @@ class _LeaveFormViewState extends State<LeaveFormView> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Container(
-                                    width: 220,
-                                    height: 50,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: ViewColor.text_grey_color,
-                                    ),
-                                    alignment: Alignment.centerRight,
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        _selectEndDate(context);
-                                      },
+                                  GestureDetector(
+                                    child: Container(
+                                      width: 220,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        color: ViewColor.text_grey_color,
+                                      ),
+                                      alignment: Alignment.centerRight,
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           Padding(
                                             padding: const EdgeInsets.only(left: 10.0),
                                             child: Text(
-                                              "${selectEndDate.toLocal()}".split(' ')[0],
+                                              DateTimeFormat.pickerDateFormat("${selectEndDate.toLocal()}"),
                                               style: TextStyles.leaveText4,
                                             ),
                                           ),
-                                          // SvgPicture.asset(
-                                          //   'assets/calender.svg',
-                                          //   height: 30,
-                                          //   width: 30,
-                                          //   color: ViewColor.text_black_color,
-                                          // )
                                           Padding(
-                                            padding: const EdgeInsets.only(right: 15.0),
-                                            child: Icon(
-                                              Icons.calendar_today,
-                                              size: 40,
+                                            padding: const EdgeInsets.only(right: 10.0),
+                                            child: Image.asset(
+                                              'assets/calendar.png',
+                                              height: 40,
+                                              width: 40,
+                                              color: ViewColor.text_black_color,
                                             ),
                                           ),
                                         ],
                                       ),
                                     ),
+                                    onTap: () {
+                                      _selectEndDate(context);
+                                    },
                                   ),
                                 ],
                               ),
@@ -206,6 +224,9 @@ class _LeaveFormViewState extends State<LeaveFormView> {
                                       padding: const EdgeInsets.only(left: 10.0),
                                       child: DropdownButtonHideUnderline(
                                         child: DropdownButton<String>(
+                                          iconEnabledColor: ViewColor.text_grey_color,
+                                          iconDisabledColor: ViewColor.text_grey_color,
+                                          isExpanded: true,
                                           elevation: 16,
                                           items: type.map((type) {
                                             return DropdownMenuItem(
@@ -258,16 +279,14 @@ class _LeaveFormViewState extends State<LeaveFormView> {
                                         focusNode: reasonFocus,
                                         maxLines: 5,
                                         enabled: true,
-                                        textInputAction: TextInputAction.next,
-                                        // onFieldSubmitted: (term) {
-                                        //   reasonFocus.unfocus();
-                                        //   FocusScope.of(context).requestFocus();
-                                        // },
                                         controller: reasonController,
                                         decoration: InputDecoration(
                                           border: InputBorder.none,
                                         ),
                                         validator: (value) {
+                                          if (!reasonFocus.hasFocus) {
+                                            return null;
+                                          }
                                           if (value.isEmpty) {
                                             return Utils.msgReason;
                                           }
@@ -281,7 +300,7 @@ class _LeaveFormViewState extends State<LeaveFormView> {
                             ],
                           ),
                           SizedBox(
-                            height: 35,
+                            height: 50,
                           ),
                           Container(
                             decoration: BoxDecoration(
@@ -298,10 +317,10 @@ class _LeaveFormViewState extends State<LeaveFormView> {
                               textColor: Colors.white,
                               padding: const EdgeInsets.fromLTRB(20.0, 14.0, 20.0, 14.0),
                               onPressed: () {
-                                FocusManager.instance.primaryFocus.unfocus();
+                                var diff = selectEndDate.difference(selectStartDate).inDays;
                                 if (_formKey.currentState.validate()) {
                                   model.postLeave(_currentType.toString(), selectStartDate.toString(),
-                                      selectEndDate.toString(), reasonController.text);
+                                      selectEndDate.toString(), reasonController.text, diff);
                                   reasonController.clear();
                                   Flushbar(
                                     messageText: Center(
@@ -346,11 +365,24 @@ class _LeaveFormViewState extends State<LeaveFormView> {
     );
   }
 
+
+  // _showMessages(BuildContext context) async{
+  //   var now = DateTime.now();
+  //   var start= DateTime(now.year, now.month, now.day + 2);
+  //   var diff = selectEndDate.difference(selectStartDate).inDays;
+  //   if(s == 2){
+  //
+  //   }
+  //
+  // }
+
+
   _selectStartDate(BuildContext context) async {
+    var now = DateTime.now();
     final DateTime picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
+      initialDate: DateTime(now.year, now.month, now.day + 2),
+      firstDate: DateTime(now.year, now.month, now.day + 2),
       lastDate: DateTime(2100),
       helpText: 'Select start date of leave',
       builder: (context, child) {
@@ -368,10 +400,11 @@ class _LeaveFormViewState extends State<LeaveFormView> {
   }
 
   _selectEndDate(BuildContext context) async {
+    var now = DateTime.now();
     final DateTime picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
+      initialDate: DateTime(now.year, now.month, now.day + 2),
+      firstDate: DateTime(now.year, now.month, now.day + 2),
       lastDate: DateTime(2100),
       helpText: 'Select end date of leave',
       builder: (context, child) {

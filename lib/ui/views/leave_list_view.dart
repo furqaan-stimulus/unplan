@@ -122,7 +122,7 @@ class _LeaveListViewState extends State<LeaveListView> {
                                       ? ''
                                       : (model.getEmpInfo.length == 0)
                                           ? ''
-                                          : '${model.getEmpInfo.first.scLeave}',
+                                          : '${model.getEmpInfo.first.paidLeave}',
                                   style: TextStyles.leaveText,
                                 ),
                               ),

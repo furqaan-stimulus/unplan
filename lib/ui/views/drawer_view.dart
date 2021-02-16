@@ -65,6 +65,8 @@ class _DrawerViewState extends State<DrawerView> {
                       ),
                       GestureDetector(
                         onTap: () {
+                          FocusManager.instance.primaryFocus.unfocus();
+                          FocusScope.of(context).unfocus();
                           Navigator.of(context).pop();
                           model.navigateToPersonalInfoView();
                         },
@@ -78,6 +80,8 @@ class _DrawerViewState extends State<DrawerView> {
                       ),
                       GestureDetector(
                         onTap: () {
+                          FocusManager.instance.primaryFocus.unfocus();
+                          FocusScope.of(context).unfocus();
                           Navigator.of(context).pop();
                           model.navigateToEmployeeInfoView();
                         },
@@ -91,6 +95,8 @@ class _DrawerViewState extends State<DrawerView> {
                       ),
                       GestureDetector(
                         onTap: () {
+                          FocusManager.instance.primaryFocus.unfocus();
+                          FocusScope.of(context).unfocus();
                           Navigator.of(context).pop();
                           model.navigateToLeavesView();
                         },
@@ -104,6 +110,8 @@ class _DrawerViewState extends State<DrawerView> {
                       ),
                       GestureDetector(
                         onTap: () {
+                          FocusManager.instance.primaryFocus.unfocus();
+                          FocusScope.of(context).unfocus();
                           Navigator.of(context).pop();
                           model.navigateToLeavesListView();
                         },

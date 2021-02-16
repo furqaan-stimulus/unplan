@@ -1,4 +1,6 @@
 import 'package:intl/intl.dart';
+import 'package:unplan/model/employee_information.dart';
+import 'package:unplan/model/leave_list_log.dart';
 import 'package:unplan/model/today_log.dart';
 
 class DateTimeFormat {
@@ -29,6 +31,13 @@ class DateTimeFormat {
     return newFormat.toString();
   }
 
+  static String pickerDateFormat(String dateString) {
+    var inputDate = DateTime.parse(dateString);
+    var formatDate = DateFormat('dd/MM/yyyy');
+    var newFormat = formatDate.format(inputDate);
+    return newFormat.toString();
+  }
+
   static String leaveDate1(String dateString) {
     var inputDate = DateTime.parse(dateString);
     var formatDate = DateFormat('dd/MM');
@@ -51,11 +60,6 @@ class DateTimeFormat {
     switch (unit) {
       case 'hours':
         {
-          // var hr= double.parse((timeInSeconds / (60 * 60)).toStringAsFixed(2));
-          // var inputDate = DateTime.parse(hr.toString());
-          // var formatDate = DateFormat('HH:mm ');
-          // var newFormat = formatDate.format(inputDate);
-          // return newFormat.toString();
           return double.parse((timeInSeconds / (60 * 60)).toStringAsFixed(2));
         }
 
@@ -80,5 +84,15 @@ class DateTimeFormat {
         return Duration.zero;
       }
     }).toList();
+  }
+
+  static int sumOfLeaves(List<LeaveListLog> logs) {
+    int sum = logs.fold(0, (totalDays, leaveList) => totalDays + leaveList.totalDays);
+    return sum;
+  }
+
+  static int sumOfPresent(List<TodayLog> logs) {
+    int sum = logs.fold(0, (totalDays, leaveList) => totalDays + leaveList.getPresentDays());
+    return sum;
   }
 }

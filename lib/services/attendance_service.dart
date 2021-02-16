@@ -39,7 +39,7 @@ class AttendanceService {
   StreamController<List<EmployeeInformation>> _getEmpInfoStrmCntl =
       StreamController<List<EmployeeInformation>>.broadcast();
 
-  Stream<List<EmployeeInformation>> get _getEmpInfoStrm => _getEmpInfoStrmCntl.stream;
+  Stream<List<EmployeeInformation>> get getEmpInfoStrm => _getEmpInfoStrmCntl.stream;
 
   StreamController<List<AttendanceLog>> _logforToday = StreamController<List<AttendanceLog>>.broadcast();
 
@@ -62,7 +62,8 @@ class AttendanceService {
 
   Stream<List<PersonalInformation>> get userDataStream => _userDataStrCntl.stream;
 
-  Future<Map<String, dynamic>> markLog(String type, String currentAddress, double latitude, double longitude) async {
+  Future<Map<String, dynamic>> markLog(
+      String type, String currentAddress, double latitude, double longitude, int present, double totalHours) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     int empId = preferences.getInt('id');
     DateTime now = DateTime.now();
@@ -75,6 +76,8 @@ class AttendanceService {
       'location': currentAddress,
       'currunt_lat': latitude,
       'currunt_long': longitude,
+      'present': present,
+      'total_hour': totalHours,
     };
 
     var result;
@@ -200,7 +203,8 @@ class AttendanceService {
     return _logListToday.stream;
   }
 
-  Future<Map<String, dynamic>> postLeave(String type, String fromDate, String toDate, String reasonOfLeave) async {
+  Future<Map<String, dynamic>> postLeave(
+      String type, String fromDate, String toDate, String reasonOfLeave, int totalDays) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     int empId = preferences.getInt('id');
     final Map<String, dynamic> logData = {
@@ -209,7 +213,8 @@ class AttendanceService {
       'to': toDate,
       'leave_type': type,
       'reason_of_leave': reasonOfLeave,
-      'status': 'notapproved'
+      'status': 'notapproved',
+      'total_days': totalDays,
     };
 
     var result;
@@ -264,8 +269,9 @@ class AttendanceService {
           headers: {'Authorization': 'Bearer $authToken'},
         );
       if (response != null) {
-        _getEmpInfo =
-            (json.decode(response.body)['Employee Leave Info'] as List).map((e) => EmployeeInformation.fromJson(e)).toList();
+        _getEmpInfo = (json.decode(response.body)['Employee Leave Info'] as List)
+            .map((e) => EmployeeInformation.fromJson(e))
+            .toList();
         _getEmpInfoStrmCntl.sink.add(_getEmpInfo);
       } else {
         _getEmpInfoStrmCntl.sink.add([]);

@@ -5,8 +5,10 @@ import 'package:stacked/stacked.dart';
 import 'package:unplan/app/locator.dart';
 import 'package:unplan/enum/log_type.dart';
 import 'package:unplan/model/attendance_log.dart';
+import 'package:unplan/model/today_log.dart';
 import 'package:unplan/services/attendance_service.dart';
 import 'package:unplan/model/address_detail.dart';
+import 'package:unplan/utils/date_time_format.dart';
 import 'package:unplan/utils/utils.dart';
 
 class HomeLogViewModel extends BaseViewModel {
@@ -42,6 +44,9 @@ class HomeLogViewModel extends BaseViewModel {
   List<AddressDetail> _addressDetail = [];
 
   List<AddressDetail> get addressDetail => _addressDetail;
+  List<TodayLog> _logList = [];
+
+  List<TodayLog> get logList => _logList;
 
   var result;
 
@@ -125,16 +130,28 @@ class HomeLogViewModel extends BaseViewModel {
 
   markClockIn() async {
     await _attendanceService.markLog(
-        Utils.CLOCKIN, _currentAddress, currentPosition.latitude, currentPosition.longitude);
+        Utils.CLOCKIN, _currentAddress, currentPosition.latitude, currentPosition.longitude, 0, 0);
   }
 
   markClockOut() async {
+    double totalHour = DateTimeFormat.calculateHoursForSingleDay(_logList);
+    print("total: ${totalHour.toInt()}");
+    int present = 0;
+    // if (totalHour.toInt() >= 4) {
+    //   print("if");
+    //   await _attendanceService.markLog(Utils.CLOCKOUT, _currentAddress, currentPosition.latitude,
+    //       currentPosition.longitude, present++, totalHour.toInt());
+    // } else {
+    //   print("else");
+    //   await _attendanceService.markLog(
+    //       Utils.CLOCKOUT, _currentAddress, currentPosition.latitude, currentPosition.longitude, 0, totalHour.toInt());
+    // }
     await _attendanceService.markLog(
-        Utils.CLOCKOUT, _currentAddress, currentPosition.latitude, currentPosition.longitude);
+        Utils.CLOCKOUT, _currentAddress, currentPosition.latitude, currentPosition.longitude, present++, totalHour);
   }
 
   markClockTimeOut() async {
     await _attendanceService.markLog(
-        Utils.TIMEOUT, _currentAddress, currentPosition.latitude, currentPosition.longitude);
+        Utils.TIMEOUT, _currentAddress, currentPosition.latitude, currentPosition.longitude, 0, 0);
   }
 }

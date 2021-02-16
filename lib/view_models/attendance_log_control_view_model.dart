@@ -124,19 +124,16 @@ class AttendanceLogControlViewModel extends BaseViewModel {
 
   markClockIn() async {
     await _attendanceService.markLog(
-        Utils.CLOCKIN, _currentAddress, _currentPosition.latitude, _currentPosition.longitude);
-    notifyListeners();
+        Utils.CLOCKIN, _currentAddress, currentPosition.latitude, currentPosition.longitude, 0, 0);
   }
 
   markClockOut() async {
     await _attendanceService.markLog(
-        Utils.CLOCKOUT, _currentAddress, _currentPosition.latitude, _currentPosition.longitude);
-    notifyListeners();
+        Utils.CLOCKOUT, _currentAddress, currentPosition.latitude, currentPosition.longitude, 0, 0);
   }
 
   markClockTimeOut() async {
     await _attendanceService.markLog(
-        Utils.TIMEOUT, _currentAddress, _currentPosition.latitude, _currentPosition.longitude);
-    notifyListeners();
+        Utils.TIMEOUT, _currentAddress, currentPosition.latitude, currentPosition.longitude, 0, 0);
   }
 }

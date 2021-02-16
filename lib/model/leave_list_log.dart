@@ -8,6 +8,7 @@ class LeaveListLog {
     this.leaveType,
     this.reasonOfLeave,
     this.status,
+    this.totalDays,
   });
 
   int id;
@@ -18,6 +19,8 @@ class LeaveListLog {
   String leaveType;
   String reasonOfLeave;
   String status;
+  int totalDays;
+
 
   factory LeaveListLog.fromJson(Map<String, dynamic> json) => LeaveListLog(
     id: json["id"],
@@ -28,6 +31,7 @@ class LeaveListLog {
     leaveType: json["leave_type"],
     reasonOfLeave: json["reason_of_leave"],
     status: json["status"],
+    totalDays: json["total_days"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -39,5 +43,10 @@ class LeaveListLog {
     "leave_type": leaveType,
     "reason_of_leave": reasonOfLeave,
     "status": status,
+    "total_days": totalDays,
   };
+
+  int getTotalLeaveDays() {
+    return this.totalDays;
+  }
 }
