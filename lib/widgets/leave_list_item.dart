@@ -37,7 +37,8 @@ class _LeaveListItemState extends State<LeaveListItem> {
                       style: TextStyles.leaveListText),
                   TextSpan(text: " - ", style: TextStyles.leaveListText),
                   TextSpan(
-                      text: DateTimeFormat.leaveDate1("${widget.log.to.toString()}"), style: TextStyles.leaveListText),
+                      text: DateTimeFormat.leaveDate1("${widget.log.to.toString()}"),
+                      style: TextStyles.leaveListText),
                 ],
               ),
             ),
@@ -52,7 +53,7 @@ class _LeaveListItemState extends State<LeaveListItem> {
           ),
           (widget.log.status == "approved")
               ? Padding(
-                  padding: const EdgeInsets.only(right: 22.0),
+                  padding: const EdgeInsets.only(left: 11.0, right: 11.0),
                   child: Text(
                     widget.log.status == "approved" ? "Approved" : "",
                     style: TextStyles.leaveListText1,

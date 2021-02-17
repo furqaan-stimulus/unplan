@@ -10,8 +10,10 @@ class LeaveFormViewModel extends BaseViewModel {
 
   List<EmployeeInformation> get getEmpInfo => _getEmpInfo;
 
-  postLeave(String type, String fromDate, String toDate, String reasonOfLeave,int totalDays) async {
-    await _attendanceService.postLeave(type, fromDate, toDate, reasonOfLeave,totalDays);
+  postLeave(String type, String fromDate, String toDate, String reasonOfLeave, int totalDays, int paidLeave,
+      int sickLeave, int unpaidLeave, int remainPaid, int remainSick) async {
+    await _attendanceService.postLeave(type, fromDate, toDate, reasonOfLeave, totalDays, paidLeave, sickLeave,
+        unpaidLeave, remainPaid, remainSick);
     notifyListeners();
   }
 

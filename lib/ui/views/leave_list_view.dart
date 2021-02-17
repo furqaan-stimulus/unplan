@@ -164,7 +164,7 @@ class _LeaveListViewState extends State<LeaveListView> {
                               child: Center(
                                 child: Text(
                                   (model.hasError)
-                                      ?''
+                                      ? ''
                                       : (model.getEmpInfo.length == 0)
                                           ? ''
                                           : '${model.getEmpInfo.first.sickLeave}',
@@ -216,6 +216,8 @@ class _LeaveListViewState extends State<LeaveListView> {
                   padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
                     children: [
                       Text(
                         "Applied",
@@ -229,9 +231,12 @@ class _LeaveListViewState extends State<LeaveListView> {
                         "Type",
                         style: TextStyles.leaveText3,
                       ),
-                      Text(
-                        "Status",
-                        style: TextStyles.leaveText3,
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: Text(
+                          "Status",
+                          style: TextStyles.leaveText3,
+                        ),
                       ),
                     ],
                   ),

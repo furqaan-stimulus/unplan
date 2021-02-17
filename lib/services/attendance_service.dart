@@ -53,7 +53,8 @@ class AttendanceService {
 
   Stream<List<TodayLog>> get logListToday => _logListToday.stream;
 
-  StreamController<List<AddressDetail>> _addressStreamControl = StreamController<List<AddressDetail>>.broadcast();
+  StreamController<List<AddressDetail>> _addressStreamControl =
+      StreamController<List<AddressDetail>>.broadcast();
 
   Stream<List<AddressDetail>> get addressStreamControl => _addressStreamControl.stream;
 
@@ -62,8 +63,8 @@ class AttendanceService {
 
   Stream<List<PersonalInformation>> get userDataStream => _userDataStrCntl.stream;
 
-  Future<Map<String, dynamic>> markLog(
-      String type, String currentAddress, double latitude, double longitude, int present, double totalHours) async {
+  Future<Map<String, dynamic>> markLog(String type, String currentAddress, double latitude, double longitude,
+      int present, double totalHours) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     int empId = preferences.getInt('id');
     DateTime now = DateTime.now();
@@ -86,7 +87,11 @@ class AttendanceService {
     Response response = await post(
       Utils.attendance_url,
       body: json.encode(logData),
-      headers: {'Content-Type': 'application/json', 'accept': 'application/json', 'Authorization': 'Bearer $token'},
+      headers: {
+        'Content-Type': 'application/json',
+        'accept': 'application/json',
+        'Authorization': 'Bearer $token'
+      },
     );
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseData = json.decode(response.body);
@@ -117,8 +122,9 @@ class AttendanceService {
             headers: {'Authorization': 'Bearer $authToken'},
           );
         if (response != null) {
-          _logs =
-              (json.decode(response.body)['Employee Detail'] as List).map((e) => AttendanceLog.fromJson(e)).toList();
+          _logs = (json.decode(response.body)['Employee Detail'] as List)
+              .map((e) => AttendanceLog.fromJson(e))
+              .toList();
           _logforToday.sink.add(_logs);
         } else {
           _logforToday.sink.add([]);
@@ -140,8 +146,9 @@ class AttendanceService {
           headers: {'Authorization': 'Bearer $authToken'},
         );
         if (response != null) {
-          _addDetail =
-              (json.decode(response.body)['Employee Detail'] as List).map((e) => AddressDetail.fromJson(e)).toList();
+          _addDetail = (json.decode(response.body)['Employee Detail'] as List)
+              .map((e) => AddressDetail.fromJson(e))
+              .toList();
           _addressStreamControl.sink.add(_addDetail);
         } else {
           _addressStreamControl.sink.add([]);
@@ -163,8 +170,9 @@ class AttendanceService {
           headers: {'Authorization': 'Bearer $authToken'},
         );
       if (response != null) {
-        _userDataList =
-            (json.decode(response.body)['Personal Info'] as List).map((e) => PersonalInformation.fromJson(e)).toList();
+        _userDataList = (json.decode(response.body)['Personal Info'] as List)
+            .map((e) => PersonalInformation.fromJson(e))
+            .toList();
         _userDataStrCntl.sink.add(_userDataList);
       } else {
         _userDataStrCntl.sink.add([]);
@@ -193,7 +201,9 @@ class AttendanceService {
             headers: {'Authorization': 'Bearer $authToken'},
           );
         if (response != null) {
-          _logList = (json.decode(response.body)['Attendence Data'] as List).map((e) => TodayLog.fromJson(e)).toList();
+          _logList = (json.decode(response.body)['Attendence Data'] as List)
+              .map((e) => TodayLog.fromJson(e))
+              .toList();
           _logListToday.sink.add(_logList);
         } else {
           _logListToday.sink.add([]);
@@ -203,14 +213,18 @@ class AttendanceService {
     return _logListToday.stream;
   }
 
-  Future<Map<String, dynamic>> postLeave(
-      String type, String fromDate, String toDate, String reasonOfLeave, int totalDays) async {
+  Future<Map<String, dynamic>> postLeave(String type, String fromDate, String toDate, String reasonOfLeave,
+      int totalDays, int paidLeave, int sickLeave, int unpaidLeave, int remainPaid, int remainSick) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     int empId = preferences.getInt('id');
+
     final Map<String, dynamic> logData = {
       'apply_date': DateTime.now().toString(),
       'from': fromDate,
       'to': toDate,
+      'unpaid_leave': unpaidLeave,
+      'paid_leave': paidLeave,
+      'sick_leave': sickLeave,
       'leave_type': type,
       'reason_of_leave': reasonOfLeave,
       'status': 'notapproved',
@@ -223,8 +237,13 @@ class AttendanceService {
     Response response = await post(
       Utils.post_leave_url + "$empId",
       body: json.encode(logData),
-      headers: {'Content-Type': 'application/json', 'accept': 'application/json', 'Authorization': 'Bearer $token'},
+      headers: {
+        'Content-Type': 'application/json',
+        'accept': 'application/json',
+        'Authorization': 'Bearer $token'
+      },
     );
+    // .then(updateLeaves).catchError(onError);
     if (response.statusCode == 200) {
       result = {'status': true, 'message': 'code ${response.statusCode},${response.body} '};
       print(result);
@@ -232,8 +251,46 @@ class AttendanceService {
       result = {'status': false, 'message': 'code ${response.statusCode},${response.body}'};
       print(result);
     }
+
     return jsonDecode(response.body);
   }
+
+  // static onError(error) {
+  //   print("the error is $error.detail");
+  //   return {'status': false, 'message': 'Unsuccessful Request', 'data': error};
+  // }
+  //
+  // Future<FutureOr> updateLeaves(Response resp) async {
+  //   SharedPreferences preferences = await SharedPreferences.getInstance();
+  //   int empId = preferences.getInt('id');
+  //   var result;
+  //   var token = preferences.getString('token');
+  //   var name = preferences.getString('name');
+  //   var remainPaid = preferences.getInt('remainPaid');
+  //   var remainSick = preferences.getInt('remainSick');
+  //
+  //   final Map<String, dynamic> leaveData = {
+  //     'unsc_leave': remainPaid,
+  //     'sick_leave': remainSick,
+  //   };
+  //   resp = await post(
+  //     Utils.update_employee_info_url + Utils.PS + "$name" + Utils.PS + "$empId",
+  //     body: json.encode(leaveData),
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       'accept': 'application/json',
+  //       'Authorization': 'Bearer $token'
+  //     },
+  //   );
+  //   if (resp.statusCode == 200) {
+  //     result = {'status': true, 'message': 'code ${resp.statusCode},${resp.body} '};
+  //     print(result);
+  //   } else {
+  //     result = {'status': true, 'message': 'code ${resp.statusCode},${resp.body} '};
+  //     print(result);
+  //   }
+  //   return jsonDecode(resp.body);
+  // }
 
   Stream<List<LeaveListLog>> getLeavesList() {
     Future.delayed(const Duration(microseconds: 250), () async {
@@ -247,8 +304,9 @@ class AttendanceService {
           headers: {'Authorization': 'Bearer $authToken'},
         );
       if (response != null) {
-        _leaveList =
-            (json.decode(response.body)['Employee Leave Info'] as List).map((e) => LeaveListLog.fromJson(e)).toList();
+        _leaveList = (json.decode(response.body)['Employee Leave Info'] as List)
+            .map((e) => LeaveListLog.fromJson(e))
+            .toList();
         _leaveListCntl.sink.add(_leaveList);
       } else {
         _leaveListCntl.sink.add([]);

@@ -57,7 +57,8 @@ class _HomeStatsViewState extends State<HomeStatsView> {
                                   style: TextStyles.homeText2,
                                 )
                               : Text(
-                                  "${DateTimeFormat.sumOfPresent(model.logList)}",
+                                  // "${DateTimeFormat.sumOfPresent(model.logList)}",
+                                  '0',
                                   style: TextStyles.homeText2,
                                 ),
                     ],
@@ -98,7 +99,8 @@ class _HomeStatsViewState extends State<HomeStatsView> {
                                   style: TextStyles.homeText2,
                                 )
                               : Text(
-                                  "${DateTimeFormat.sumOfLeaves(model.leaveList)}",
+                                  // "${DateTimeFormat.sumOfLeaves(model.leaveList)}",
+                                  '0',
                                   style: TextStyles.homeText2,
                                 ),
                     ],
@@ -184,7 +186,7 @@ class _HomeStatsViewState extends State<HomeStatsView> {
                                     style: TextStyles.homeText2,
                                   )
                                 : Text(
-                                    "${model.getEmpInfo.first.paidLeave}",
+                                    "${model.getEmpInfo.first.sickLeave}",
                                     style: TextStyles.homeText2,
                                   ),
                       ],

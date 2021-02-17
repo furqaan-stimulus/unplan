@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
+import 'package:unplan/services/shared_pref_service.dart';
 import 'package:unplan/utils/date_time_format.dart';
 import 'package:unplan/utils/text_styles.dart';
 import 'package:unplan/utils/utils.dart';
@@ -33,6 +35,8 @@ class _LeaveFormViewState extends State<LeaveFormView> {
   bool cutOffMessage = false;
   bool beforeErrorMessage = false;
   bool typeErrorMessage = false;
+  bool typeErrorMessage1 = false;
+  bool wordErrorMessage = false;
 
   @override
   void initState() {
@@ -48,6 +52,16 @@ class _LeaveFormViewState extends State<LeaveFormView> {
     reasonFocus.dispose();
     submitFocus.dispose();
     typeFocus.dispose();
+  }
+
+  int wordsNum = 0;
+
+  void countWords(value) {
+    var regExp = new RegExp(r"\w+('\w+)?");
+    int wordsCount = regExp.allMatches(reasonController.text).length; //here I have trouble
+    setState(() {
+      wordsNum = wordsCount;
+    });
   }
 
   @override
@@ -289,6 +303,7 @@ class _LeaveFormViewState extends State<LeaveFormView> {
                                       padding: const EdgeInsets.only(left: 10.0),
                                       child: TextFormField(
                                         style: TextStyles.leaveText4,
+                                        textCapitalization: TextCapitalization.sentences,
                                         focusNode: reasonFocus,
                                         maxLines: 5,
                                         enabled: true,
@@ -306,6 +321,7 @@ class _LeaveFormViewState extends State<LeaveFormView> {
                                           }
                                           return null;
                                         },
+                                        onChanged: countWords,
                                       ),
                                     ),
                                   ),
@@ -361,6 +377,24 @@ class _LeaveFormViewState extends State<LeaveFormView> {
                               ),
                             ),
                           ),
+                          Visibility(
+                            visible: typeErrorMessage1,
+                            child: Container(
+                              child: Text(
+                                'You don\'t have enough sick leaves!',
+                                style: TextStyles.leaveMessages,
+                              ),
+                            ),
+                          ),
+                          Visibility(
+                            visible: wordErrorMessage,
+                            child: Container(
+                              child: Text(
+                                'Enter up to 10 words to explain your reason',
+                                style: TextStyles.leaveMessages,
+                              ),
+                            ),
+                          ),
                           SizedBox(
                             height: 15,
                           ),
@@ -378,50 +412,326 @@ class _LeaveFormViewState extends State<LeaveFormView> {
                               ),
                               textColor: Colors.white,
                               padding: const EdgeInsets.fromLTRB(20.0, 14.0, 20.0, 14.0),
-                              onPressed: () {
+                              onPressed: () async {
                                 var diff = selectEndDate.difference(selectStartDate).inDays;
-                                if (selectEndDate.isBefore(selectStartDate)) {
-                                  beforeErrorMessage = true;
-                                  Future.delayed(const Duration(seconds: 5), () {
-                                    setState(() {
-                                      beforeErrorMessage = false;
-                                    });
-                                  });
+                                var totalDays = diff + 1;
+                                var probDuration;
+                                String joinDate;
+                                int joinYr, joinMonth, joinDay;
+                                var lastProbationDay;
+                                if (model.getEmpInfo.length == 0) {
                                 } else {
-                                  if (reasonController.text.isEmpty) {
-                                    FocusManager.instance.primaryFocus.unfocus();
-                                    reasonController.clear();
-                                    showFailMessage = true;
-                                    Future.delayed(const Duration(seconds: 5), () {
-                                      setState(() {
-                                        showFailMessage = false;
-                                      });
-                                    });
-                                  } else {
-                                    // if (model.getEmpInfo.first.paidLeave == 0 && _currentType == "Paid Leave") {
-                                    //   typeErrorMessage = true;
-                                    //   Future.delayed(const Duration(seconds: 5), () {
-                                    //     setState(() {
-                                    //       typeErrorMessage = false;
-                                    //     });
-                                    //   });
-                                    // }
-                                    if (_formKey.currentState.validate()) {
-                                      FocusManager.instance.primaryFocus.unfocus();
-                                      model.postLeave(_currentType.toString(), selectStartDate.toString(),
-                                          selectEndDate.toString(), reasonController.text, diff);
-                                      reasonController.clear();
-                                      showSuccessMessage = true;
-                                      Future.delayed(const Duration(seconds: 5), () {
+                                  probDuration = model.getEmpInfo.first.probetion;
+                                  joinDate = "${model.getEmpInfo.first.joiningDate}";
+                                  DateTime nDate = DateTime.parse(joinDate);
+                                  joinYr = nDate.year;
+                                  joinMonth = nDate.month;
+                                  joinDay = nDate.day;
+                                  lastProbationDay = DateTime(joinYr, joinMonth + probDuration, joinDay - 1);
+                                  if (selectStartDate.isAfter(model.getEmpInfo.first.joiningDate) &&
+                                          selectStartDate.isBefore(lastProbationDay) ||
+                                      selectEndDate.isBefore(lastProbationDay) &&
+                                          selectEndDate.isAfter(model.getEmpInfo.first.joiningDate)) {
+                                    if (_currentType == "Paid Leave") {
+                                      typeErrorMessage = true;
+                                      Future.delayed(const Duration(seconds: 2), () {
                                         setState(() {
-                                          showSuccessMessage = false;
+                                          typeErrorMessage = false;
+                                        });
+                                      });
+                                    } else if (_currentType == "Sick Leave") {
+                                      typeErrorMessage1 = true;
+                                      Future.delayed(const Duration(seconds: 2), () {
+                                        setState(() {
+                                          typeErrorMessage1 = false;
                                         });
                                       });
                                     } else {
-                                      showFailMessage = true;
-                                      Future.delayed(const Duration(seconds: 5), () {
+                                      if (selectEndDate.isBefore(selectStartDate)) {
+                                        beforeErrorMessage = true;
+                                        Future.delayed(const Duration(seconds: 2), () {
+                                          setState(() {
+                                            beforeErrorMessage = false;
+                                          });
+                                        });
+                                      } else {
+                                        if (reasonController.text.isEmpty) {
+                                          FocusManager.instance.primaryFocus.unfocus();
+                                          reasonController.clear();
+                                          showFailMessage = true;
+                                          Future.delayed(const Duration(seconds: 2), () {
+                                            setState(() {
+                                              showFailMessage = false;
+                                            });
+                                          });
+                                        } else {
+                                          if (model.getEmpInfo.first.paidLeave == 0 &&
+                                              _currentType == "Paid Leave") {
+                                            typeErrorMessage = true;
+                                            Future.delayed(const Duration(seconds: 2), () {
+                                              setState(() {
+                                                typeErrorMessage = false;
+                                              });
+                                            });
+                                          } else if (model.getEmpInfo.first.sickLeave == 0 &&
+                                              _currentType == "Sick Leave") {
+                                            typeErrorMessage1 = true;
+                                            Future.delayed(const Duration(seconds: 2), () {
+                                              setState(() {
+                                                typeErrorMessage1 = false;
+                                              });
+                                            });
+                                          } else {
+                                            // SharedPreferences pref = await SharedPreferences.getInstance();
+                                            if (wordsNum >= 10) {
+                                              if (_formKey.currentState.validate()) {
+                                                FocusManager.instance.primaryFocus.unfocus();
+                                                int pl = 0, sl = 0, ul = 0, remainPaid, remainSick;
+                                                if (model.getEmpInfo.first.paidLeave == 0 &&
+                                                        _currentType == "Paid Leave" ||
+                                                    model.getEmpInfo.first.sickLeave == 0 &&
+                                                        _currentType == "Sick Leave" ||
+                                                    _currentType == "Unpaid Leave") {
+                                                  pl = remainPaid = 0;
+                                                  sl = remainSick = 0;
+                                                  ul = totalDays;
+                                                  remainPaid = model.getEmpInfo.first.paidLeave;
+                                                  remainSick = model.getEmpInfo.first.sickLeave;
+                                                  //pref.setInt('remainPaid', remainPaid);
+                                                  //pref.setInt('remainSick', remainSick);
+                                                  print(
+                                                      "7: pl: $pl | sl: $sl | ul: $ul | remainPaid: $remainPaid | remainSick: $remainSick");
+                                                } else if (model.getEmpInfo.first.paidLeave == totalDays &&
+                                                    _currentType == "Paid Leave") {
+                                                  pl = totalDays;
+                                                  sl = 0;
+                                                  ul = 0;
+                                                  remainSick = model.getEmpInfo.first.sickLeave;
+                                                  remainPaid = model.getEmpInfo.first.paidLeave - totalDays;
+                                                  //pref.setInt('remainPaid', remainPaid);
+                                                  //pref.setInt('remainSick', remainSick);
+                                                  print(
+                                                      "7: pl: $pl | sl: $sl | ul: $ul | remainPaid: $remainPaid | remainSick: $remainSick");
+                                                } else if (model.getEmpInfo.first.sickLeave == totalDays &&
+                                                    _currentType == "Sick Leave") {
+                                                  pl = 0;
+                                                  sl = totalDays;
+                                                  ul = 0;
+                                                  remainPaid = model.getEmpInfo.first.paidLeave;
+                                                  remainSick = model.getEmpInfo.first.sickLeave - totalDays;
+                                                  //pref.setInt('remainPaid', remainPaid);
+                                                  //pref.setInt('remainSick', remainSick);
+                                                  print(
+                                                      "7: pl: $pl | sl: $sl | ul: $ul | remainPaid: $remainPaid | remainSick: $remainSick");
+                                                } else if (model.getEmpInfo.first.paidLeave > totalDays &&
+                                                    _currentType == "Paid Leave") {
+                                                  pl = totalDays;
+                                                  sl = 0;
+                                                  ul = 0;
+                                                  remainSick = model.getEmpInfo.first.sickLeave;
+                                                  remainPaid = model.getEmpInfo.first.paidLeave - totalDays;
+                                                  //pref.setInt('remainPaid', remainPaid);
+                                                  //pref.setInt('remainSick', remainSick);
+                                                  print(
+                                                      "7: pl: $pl | sl: $sl | ul: $ul | remainPaid: $remainPaid | remainSick: $remainSick");
+                                                } else if (model.getEmpInfo.first.sickLeave > totalDays &&
+                                                    _currentType == "Sick Leave") {
+                                                  pl = 0;
+                                                  sl = totalDays;
+                                                  ul = 0;
+                                                  remainSick = model.getEmpInfo.first.sickLeave - totalDays;
+                                                  remainPaid = model.getEmpInfo.first.paidLeave;
+                                                  //pref.setInt('remainPaid', remainPaid);
+                                                  //pref.setInt('remainSick', remainSick);
+                                                  print(
+                                                      "7: pl: $pl | sl: $sl | ul: $ul | remainPaid: $remainPaid | remainSick: $remainSick");
+                                                } else if (model.getEmpInfo.first.paidLeave < totalDays &&
+                                                    _currentType == "Paid Leave") {
+                                                  pl = model.getEmpInfo.first.paidLeave;
+                                                  ul = totalDays - model.getEmpInfo.first.paidLeave;
+                                                  sl = 0;
+                                                  remainSick = model.getEmpInfo.first.sickLeave;
+                                                  remainPaid = model.getEmpInfo.first.paidLeave -
+                                                      model.getEmpInfo.first.paidLeave;
+                                                  //pref.setInt('remainPaid', remainPaid);
+                                                  //pref.setInt('remainSick', remainSick);
+                                                  print(
+                                                      "7: pl: $pl | sl: $sl | ul: $ul | remainPaid: $remainPaid | remainSick: $remainSick");
+                                                } else if (model.getEmpInfo.first.sickLeave < totalDays &&
+                                                    _currentType == "Sick Leave") {
+                                                  pl = 0;
+                                                  sl = model.getEmpInfo.first.sickLeave;
+                                                  ul = totalDays - model.getEmpInfo.first.sickLeave;
+                                                  remainPaid = model.getEmpInfo.first.paidLeave;
+                                                  remainSick = model.getEmpInfo.first.sickLeave -
+                                                      model.getEmpInfo.first.sickLeave;
+                                                  //pref.setInt('remainPaid', remainPaid);
+                                                  //pref.setInt('remainSick', remainSick);
+                                                  print(
+                                                      "7: pl: $pl | sl: $sl | ul: $ul | remainPaid: $remainPaid | remainSick: $remainSick");
+                                                }
+                                                model.postLeave(
+                                                  _currentType.toString(),
+                                                  selectStartDate.toString(),
+                                                  selectEndDate.toString(),
+                                                  reasonController.text,
+                                                  totalDays,
+                                                  pl,
+                                                  sl,
+                                                  ul,
+                                                  remainPaid,
+                                                  remainSick,
+                                                );
+                                                reasonController.clear();
+                                                showSuccessMessage = true;
+                                                Future.delayed(const Duration(seconds: 2), () {
+                                                  setState(() {
+                                                    showSuccessMessage = false;
+                                                  });
+                                                });
+                                              } else {
+                                                showFailMessage = true;
+                                                Future.delayed(const Duration(seconds: 2), () {
+                                                  setState(() {
+                                                    showFailMessage = false;
+                                                  });
+                                                });
+                                              }
+                                            } else {
+                                              print("word: $wordsNum");
+                                              wordErrorMessage = true;
+                                              Future.delayed(const Duration(seconds: 2), () {
+                                                setState(() {
+                                                  wordErrorMessage = false;
+                                                });
+                                              });
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  } else {
+                                    if (wordsNum >= 10) {
+                                      // SharedPreferences pref = await SharedPreferences.getInstance();
+                                      if (_formKey.currentState.validate()) {
+                                        FocusManager.instance.primaryFocus.unfocus();
+                                        int pl = 0, sl = 0, ul = 0, remainPaid, remainSick;
+                                        if (model.getEmpInfo.first.paidLeave == 0 &&
+                                                _currentType == "Paid Leave" ||
+                                            model.getEmpInfo.first.sickLeave == 0 &&
+                                                _currentType == "Sick Leave" ||
+                                            _currentType == "Unpaid Leave") {
+                                          pl = remainPaid = 0;
+                                          sl = remainSick = 0;
+                                          ul = totalDays;
+                                          remainPaid = model.getEmpInfo.first.paidLeave;
+                                          remainSick = model.getEmpInfo.first.sickLeave;
+                                          //pref.setInt('remainPaid', remainPaid);
+                                          //pref.setInt('remainSick', remainSick);
+                                          print(
+                                              "7: pl: $pl | sl: $sl | ul: $ul | remainPaid: $remainPaid | remainSick: $remainSick");
+                                        } else if (model.getEmpInfo.first.paidLeave == totalDays &&
+                                            _currentType == "Paid Leave") {
+                                          pl = totalDays;
+                                          sl = 0;
+                                          ul = 0;
+                                          remainSick = model.getEmpInfo.first.sickLeave;
+                                          remainPaid = model.getEmpInfo.first.paidLeave - totalDays;
+                                          //pref.setInt('remainPaid', remainPaid);
+                                          //pref.setInt('remainSick', remainSick);
+                                          print(
+                                              "7: pl: $pl | sl: $sl | ul: $ul | remainPaid: $remainPaid | remainSick: $remainSick");
+                                        } else if (model.getEmpInfo.first.sickLeave == totalDays &&
+                                            _currentType == "Sick Leave") {
+                                          pl = 0;
+                                          sl = totalDays;
+                                          ul = 0;
+                                          remainPaid = model.getEmpInfo.first.paidLeave;
+                                          remainSick = model.getEmpInfo.first.sickLeave - totalDays;
+                                          //pref.setInt('remainPaid', remainPaid);
+                                          //pref.setInt('remainSick', remainSick);
+                                          print(
+                                              "7: pl: $pl | sl: $sl | ul: $ul | remainPaid: $remainPaid | remainSick: $remainSick");
+                                        } else if (model.getEmpInfo.first.paidLeave > totalDays &&
+                                            _currentType == "Paid Leave") {
+                                          pl = totalDays;
+                                          sl = 0;
+                                          ul = 0;
+                                          remainSick = model.getEmpInfo.first.sickLeave;
+                                          remainPaid = model.getEmpInfo.first.paidLeave - totalDays;
+                                          //pref.setInt('remainPaid', remainPaid);
+                                          //pref.setInt('remainSick', remainSick);
+                                          print(
+                                              "7: pl: $pl | sl: $sl | ul: $ul | remainPaid: $remainPaid | remainSick: $remainSick");
+                                        } else if (model.getEmpInfo.first.sickLeave > totalDays &&
+                                            _currentType == "Sick Leave") {
+                                          pl = 0;
+                                          sl = totalDays;
+                                          ul = 0;
+                                          remainSick = model.getEmpInfo.first.sickLeave - totalDays;
+                                          remainPaid = model.getEmpInfo.first.paidLeave;
+                                          //pref.setInt('remainPaid', remainPaid);
+                                          //pref.setInt('remainSick', remainSick);
+                                          print(
+                                              "7: pl: $pl | sl: $sl | ul: $ul | remainPaid: $remainPaid | remainSick: $remainSick");
+                                        } else if (model.getEmpInfo.first.paidLeave < totalDays &&
+                                            _currentType == "Paid Leave") {
+                                          pl = model.getEmpInfo.first.paidLeave;
+                                          ul = totalDays - model.getEmpInfo.first.paidLeave;
+                                          sl = 0;
+                                          remainSick = model.getEmpInfo.first.sickLeave;
+                                          remainPaid = model.getEmpInfo.first.paidLeave -
+                                              model.getEmpInfo.first.paidLeave;
+                                          //pref.setInt('remainPaid', remainPaid);
+                                          //pref.setInt('remainSick', remainSick);
+                                          print(
+                                              "7: pl: $pl | sl: $sl | ul: $ul | remainPaid: $remainPaid | remainSick: $remainSick");
+                                        } else if (model.getEmpInfo.first.sickLeave < totalDays &&
+                                            _currentType == "Sick Leave") {
+                                          pl = 0;
+                                          sl = model.getEmpInfo.first.sickLeave;
+                                          ul = totalDays - model.getEmpInfo.first.sickLeave;
+                                          remainPaid = model.getEmpInfo.first.paidLeave;
+                                          remainSick = model.getEmpInfo.first.sickLeave -
+                                              model.getEmpInfo.first.sickLeave;
+                                          //pref.setInt('remainPaid', remainPaid);
+                                          //pref.setInt('remainSick', remainSick);
+                                          print(
+                                              "7: pl: $pl | sl: $sl | ul: $ul | remainPaid: $remainPaid | remainSick: $remainSick");
+                                        }
+                                        model.postLeave(
+                                          _currentType.toString(),
+                                          selectStartDate.toString(),
+                                          selectEndDate.toString(),
+                                          reasonController.text,
+                                          totalDays,
+                                          pl,
+                                          sl,
+                                          ul,
+                                          remainPaid,
+                                          remainSick,
+                                        );
+                                        reasonController.clear();
+                                        showSuccessMessage = true;
+                                        Future.delayed(const Duration(seconds: 2), () {
+                                          setState(() {
+                                            showSuccessMessage = false;
+                                          });
+                                        });
+                                      } else {
+                                        showFailMessage = true;
+                                        Future.delayed(const Duration(seconds: 2), () {
+                                          setState(() {
+                                            showFailMessage = false;
+                                          });
+                                        });
+                                      }
+                                    } else {
+                                      print("word: $wordsNum");
+                                      wordErrorMessage = true;
+                                      Future.delayed(const Duration(seconds: 2), () {
                                         setState(() {
-                                          showFailMessage = false;
+                                          wordErrorMessage = false;
                                         });
                                       });
                                     }
@@ -493,27 +803,21 @@ class _LeaveFormViewState extends State<LeaveFormView> {
 
     if (selectEndDate.isBefore(selectStartDate)) {
       beforeErrorMessage = true;
-      Future.delayed(const Duration(seconds: 5), () {
+      Future.delayed(const Duration(seconds: 2), () {
         setState(() {
           beforeErrorMessage = false;
         });
       });
     } else {
       if (totalDays == 0 && twoDays >= 1) {
-        print('0: $totalDays');
         print('if case 1');
       } else if (totalDays == 1 && twoDays >= 9 || totalDays <= 4 && twoDays >= 9) {
-        print('1 to 9: $totalDays');
         print('if case 2');
       } else if (totalDays >= 5 && twoDays >= 29) {
-        print('5: $totalDays');
         print('if case 3');
-        print("if total: $totalDays");
       } else {
-        print('else: $totalDays');
-        print('else case ');
         cutOffMessage = true;
-        Future.delayed(const Duration(seconds: 5), () {
+        Future.delayed(const Duration(seconds: 2), () {
           setState(() {
             cutOffMessage = false;
           });

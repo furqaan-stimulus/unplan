@@ -52,6 +52,7 @@ class Utils {
   static const statSub6 = 'SL';
 
   // Api calls
+  static const PS = '/';
   static const LOGIN = 'login';
   static const deviceInfo = 'device_info/';
   static const addressDetails = 'address_info_get/';
@@ -61,6 +62,7 @@ class Utils {
   static const POST_LEAVE_INFO = 'leave_info/';
   static const GET_LEAVE_INFO = 'emp_leave_info/';
   static const GET_EMPLOYEE_INFO = 'teamleaveinfo/';
+  static const UPDATE_EMPLOYEE_INFO = 'teamleave/';
   static const base_url = 'https://dev.stimulusco.com/api/';
   static const login_url = base_url + LOGIN;
   static const attendance_url = base_url + ADD_ATTENDANCE;
@@ -71,4 +73,5 @@ class Utils {
   static const post_leave_url = base_url + POST_LEAVE_INFO;
   static const get_leave_url = base_url + GET_LEAVE_INFO;
   static const get_employee_info_url = base_url + GET_EMPLOYEE_INFO;
+  static const update_employee_info_url = base_url + UPDATE_EMPLOYEE_INFO;
 }

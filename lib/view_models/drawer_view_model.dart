@@ -39,7 +39,6 @@ class DrawerViewModel extends BaseViewModel {
 
   Future logout() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    var token = preferences.setString("token", null);
     preferences.clear();
     var response;
     response = await _dialogService.showDialog(
@@ -48,6 +47,6 @@ class DrawerViewModel extends BaseViewModel {
       buttonTitle: 'Logout ',
       cancelTitle: 'Cancel',
     );
-    _navigationService.pushNamedAndRemoveUntil(Routes.loginView);
+    await _navigationService.pushNamedAndRemoveUntil(Routes.loginView);
   }
 }
