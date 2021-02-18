@@ -26,6 +26,7 @@ class _LeavesViewState extends State<LeavesView> {
     return ViewModelBuilder<LeavesViewModel>.reactive(
       viewModelBuilder: () => LeavesViewModel(),
       onModelReady: (model) {
+        model.isInternet();
         model.initialise();
       },
       builder: (context, model, child) {

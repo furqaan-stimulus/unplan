@@ -16,6 +16,7 @@ class _HomeStatsViewState extends State<HomeStatsView> {
     return ViewModelBuilder<HomeStatsViewModel>.reactive(
       viewModelBuilder: () => HomeStatsViewModel(),
       onModelReady: (model) {
+        model.isInternet();
         model.initialise();
         model.getLeaveCount();
         model.getLogList();

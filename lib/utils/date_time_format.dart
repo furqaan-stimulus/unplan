@@ -1,5 +1,4 @@
 import 'package:intl/intl.dart';
-import 'package:unplan/model/employee_information.dart';
 import 'package:unplan/model/leave_list_log.dart';
 import 'package:unplan/model/today_log.dart';
 
@@ -31,6 +30,12 @@ class DateTimeFormat {
     return newFormat.toString();
   }
 
+  static String hoursToday(String dateString) {
+    var inputDate = DateTime.parse(dateString);
+    var formatDate = DateFormat('HH:mm');
+    var newFormat = formatDate.format(inputDate);
+    return newFormat.toString();
+  }
   static String pickerDateFormat(String dateString) {
     var inputDate = DateTime.parse(dateString);
     var formatDate = DateFormat('dd/MM/yyyy');

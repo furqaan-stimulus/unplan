@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'package:connectivity/connectivity.dart';
+import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:stacked/stacked.dart';
+import 'package:stacked_services/stacked_services.dart';
 import 'package:unplan/app/locator.dart';
 import 'package:unplan/enum/log_type.dart';
 import 'package:unplan/model/attendance_log.dart';
@@ -61,6 +64,30 @@ class HomeLogViewModel extends BaseViewModel {
       }
     });
     return _logType;
+  }
+
+  Future<Position> determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error('Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission != LocationPermission.whileInUse && permission != LocationPermission.always) {
+        return Future.error('Location permissions are denied (actual value: $permission).');
+      }
+    }
+
+    return await Geolocator.getCurrentPosition();
   }
 
   Future getCurrentLocation() async {
@@ -138,5 +165,45 @@ class HomeLogViewModel extends BaseViewModel {
   markClockTimeOut() async {
     await _attendanceService.markLog(
         Utils.TIMEOUT, _currentAddress, currentPosition.latitude, currentPosition.longitude, 0, 0);
+  }
+
+  final DialogService _dialogService = getIt<DialogService>();
+
+  Future<bool> isInternet() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile) {
+      // I am connected to a mobile network, make sure there is actually a net connection.
+      if (await DataConnectionChecker().hasConnection) {
+        // Mobile data detected & internet connection confirmed.
+        return true;
+      } else {
+        _dialogService.showDialog(
+          title: 'No internet Connection',
+          description: 'Please Check Your Internet Connection',
+          cancelTitle: 'Cancel',
+        );
+        return false;
+      }
+    } else if (connectivityResult == ConnectivityResult.wifi) {
+      // I am connected to a WIFI network, make sure there is actually a net connection.
+      if (await DataConnectionChecker().hasConnection) {
+        // Wifi detected & internet connection confirmed.
+        return true;
+      } else {
+        _dialogService.showDialog(
+          title: 'No internet Connection',
+          description: 'Please Check Your Internet Connection',
+          cancelTitle: 'Cancel',
+        );
+        return false;
+      }
+    } else {
+      _dialogService.showDialog(
+        title: 'No internet Connection',
+        description: 'Please Check Your Internet Connection',
+        cancelTitle: 'Cancel',
+      );
+      return false;
+    }
   }
 }

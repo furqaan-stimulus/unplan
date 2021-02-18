@@ -23,6 +23,7 @@ class _PersonalInfoViewState extends State<PersonalInfoView> {
       viewModelBuilder: () => PersonalInfoViewModel(),
       onModelReady: (model) {
         model.initialise();
+        model.isInternet();
       },
       builder: (context, model, child) {
         return Scaffold(

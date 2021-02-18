@@ -28,6 +28,8 @@ class _HomeViewState extends State<HomeView> {
         model.initialise();
         tzd.initializeTimeZones();
         model.initializeNotification();
+        model.determinePosition();
+        model.isInternet();
       },
       builder: (context, model, child) {
         return Scaffold(

@@ -28,10 +28,12 @@ class _HomeLogViewState extends State<HomeLogView> {
     return ViewModelBuilder<HomeLogViewModel>.reactive(
       viewModelBuilder: () => HomeLogViewModel(),
       onModelReady: (model) async {
+        model.isInternet();
         model.fetchLogs();
         model.getCurrentLocation();
         model.fetchAddress();
         model.initialise();
+        model.determinePosition();
       },
       builder: (context, model, child) => Scaffold(
         body: Container(
@@ -55,8 +57,34 @@ class _HomeLogViewState extends State<HomeLogView> {
                     future: model.getLogType(),
                     builder: (context, snapshot) {
                       if (snapshot.hasError) {
-                        return Container(
-                          decoration: BoxDecoration(color: ViewColor.background_white_color),
+                        return FlatButton(
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                          color: ViewColor.button_grey_color,
+                          onPressed: () {
+                            model.getCurrentLocation();
+                            showModalBottomSheet(
+                              builder: (context) {
+                                return Container(
+                                  height: 300,
+                                  decoration: new BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: new BorderRadius.only(
+                                      topLeft: const Radius.circular(25.0),
+                                      topRight: const Radius.circular(25.0),
+                                    ),
+                                  ),
+                                );
+                              },
+                              context: context,
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Text(
+                              Utils.CLOCKIN,
+                              style: TextStyles.buttonTextStyle2,
+                            ),
+                          ),
                         );
                       } else if (snapshot.data == null) {
                         return FlatButton(
@@ -235,7 +263,7 @@ class _HomeLogViewState extends State<HomeLogView> {
                                                                   style: TextStyles.alertTextStyle1,
                                                                 )
                                                               : Text(
-                                                                  'after half day',
+                                                                  '',
                                                                   style: TextStyles.alertTextStyle1,
                                                                 )
                                               : Text(''),
@@ -533,7 +561,7 @@ class _HomeLogViewState extends State<HomeLogView> {
                                                                   style: TextStyles.alertTextStyle1,
                                                                 )
                                                               : Text(
-                                                                  'after half day',
+                                                                  '',
                                                                   style: TextStyles.alertTextStyle1,
                                                                 )
                                               : Text(''),

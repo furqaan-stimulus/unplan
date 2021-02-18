@@ -21,6 +21,7 @@ class _LeaveListViewState extends State<LeaveListView> {
     return ViewModelBuilder<LeaveListViewModel>.reactive(
       viewModelBuilder: () => LeaveListViewModel(),
       onModelReady: (model) {
+        model.isInternet();
         model.initialise();
         model.getEmpInfoList();
       },

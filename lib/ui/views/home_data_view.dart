@@ -18,6 +18,7 @@ class _HomeDataViewState extends State<HomeDataView> {
       viewModelBuilder: () => HomeDataViewModel(),
       createNewModelOnInsert: true,
       onModelReady: (model) {
+        model.isInternet();
         model.initialise();
         model.getLogList();
       },

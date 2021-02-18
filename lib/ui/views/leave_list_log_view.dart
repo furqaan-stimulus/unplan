@@ -15,7 +15,10 @@ class _LeaveListLogViewState extends State<LeaveListLogView> {
   Widget build(BuildContext context) {
     return ViewModelBuilder<LeaveListLogViewModel>.reactive(
       viewModelBuilder: () => LeaveListLogViewModel(),
-      onModelReady: (model) => model.initialise(),
+      onModelReady: (model) {
+        model.isInternet();
+        model.initialise();
+      },
       builder: (context, model, child) => MediaQuery.removePadding(
         context: context,
         removeTop: true,

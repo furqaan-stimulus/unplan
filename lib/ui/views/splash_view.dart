@@ -11,6 +11,7 @@ class SplashView extends StatelessWidget {
     return ViewModelBuilder<SplashViewModel>.reactive(
       viewModelBuilder: () => SplashViewModel(),
       onModelReady: (model) {
+        model.isInternet();
         Future.delayed(
           Duration(milliseconds: 1000),
           () {

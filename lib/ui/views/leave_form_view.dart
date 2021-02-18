@@ -68,6 +68,7 @@ class _LeaveFormViewState extends State<LeaveFormView> {
     return ViewModelBuilder<LeaveFormViewModel>.reactive(
       viewModelBuilder: () => LeaveFormViewModel(),
       onModelReady: (model) {
+        model.isInternet();
         model.initialise();
       },
       builder: (context, model, child) => Scaffold(

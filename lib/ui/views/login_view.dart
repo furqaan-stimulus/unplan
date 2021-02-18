@@ -51,7 +51,9 @@ class _LoginViewState extends State<LoginView> {
   Widget build(BuildContext context) {
     return ViewModelBuilder<LoginViewModel>.reactive(
       viewModelBuilder: () => LoginViewModel(),
-      onModelReady: (model) {},
+      onModelReady: (model) {
+        model.isInternet();
+      },
       builder: (context, model, child) => Scaffold(
         resizeToAvoidBottomInset: false,
         resizeToAvoidBottomPadding: false,

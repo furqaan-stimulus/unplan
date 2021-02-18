@@ -162,6 +162,7 @@ class _DrawerViewState extends State<DrawerView> {
       },
       viewModelBuilder: () => DrawerViewModel(),
       onModelReady: (model) async {
+        model.isInternet();
         DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
         if (Platform.isAndroid) {
           AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;

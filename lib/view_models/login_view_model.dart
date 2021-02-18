@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:connectivity/connectivity.dart';
+import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:http/http.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -12,6 +14,7 @@ import 'package:unplan/utils/utils.dart';
 class LoginViewModel extends BaseViewModel {
   final NavigationService _navigationService = getIt<NavigationService>();
   final SnackbarService _snackBarService = getIt<SnackbarService>();
+  final DialogService _dialogService = getIt<DialogService>();
   var result;
 
   Future<Map<String, dynamic>> postLogin(String email, String password) async {
@@ -23,10 +26,7 @@ class LoginViewModel extends BaseViewModel {
     Response response = await post(
       Utils.login_url,
       body: json.encode(loginData),
-      headers: {
-        'Content-Type': 'application/json',
-        'accept': 'application/json'
-      },
+      headers: {'Content-Type': 'application/json', 'accept': 'application/json'},
     );
 
     if (response.statusCode == 200) {
@@ -49,9 +49,46 @@ class LoginViewModel extends BaseViewModel {
       setBusy(false);
     } else {
       result = {'status': false, 'message': 'code ${response.statusCode} '};
-      _snackBarService.showSnackbar(
-          message: 'login failed!! Enter correct credentials');
+      _snackBarService.showSnackbar(message: 'login failed!! Enter correct credentials');
     }
     return json.decode(response.body);
+  }
+
+  Future<bool> isInternet() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile) {
+      // I am connected to a mobile network, make sure there is actually a net connection.
+      if (await DataConnectionChecker().hasConnection) {
+        // Mobile data detected & internet connection confirmed.
+        return true;
+      } else {
+        _dialogService.showDialog(
+          title: 'No internet Connection',
+          description: 'Please Check Your Internet Connection',
+          cancelTitle: 'Cancel',
+        );
+        return false;
+      }
+    } else if (connectivityResult == ConnectivityResult.wifi) {
+      // I am connected to a WIFI network, make sure there is actually a net connection.
+      if (await DataConnectionChecker().hasConnection) {
+        // Wifi detected & internet connection confirmed.
+        return true;
+      } else {
+        _dialogService.showDialog(
+          title: 'No internet Connection',
+          description: 'Please Check Your Internet Connection',
+          cancelTitle: 'Cancel',
+        );
+        return false;
+      }
+    } else {
+      _dialogService.showDialog(
+        title: 'No internet Connection',
+        description: 'Please Check Your Internet Connection',
+        cancelTitle: 'Cancel',
+      );
+      return false;
+    }
   }
 }
