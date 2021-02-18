@@ -14,10 +14,8 @@ class LeaveListViewModel extends BaseViewModel {
 
   Future getName() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    setBusy(true);
     _name = preferences.getString('name');
     notifyListeners();
-    setBusy(false);
     return _name;
   }
 
@@ -36,19 +34,15 @@ class LeaveListViewModel extends BaseViewModel {
 
   List<EmployeeInformation> get getEmpInfo => _getEmpInfo;
 
-  initialise() {
-    setBusy(true);
+  Future initialise() async {
     _attendanceService.getLeavesList().listen((event) {
       _leaveList = event;
-      setBusy(false);
     });
   }
 
-  getEmpInfoList(){
-    setBusy(true);
+  Future getEmpInfoList() async {
     _attendanceService.getEmployeeInfo().listen((event) {
       _getEmpInfo = event;
-      setBusy(false);
     });
   }
 }

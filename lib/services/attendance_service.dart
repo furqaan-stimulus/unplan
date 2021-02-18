@@ -213,11 +213,20 @@ class AttendanceService {
     return _logListToday.stream;
   }
 
-  Future<Map<String, dynamic>> postLeave(String type, String fromDate, String toDate, String reasonOfLeave,
-      int totalDays, int paidLeave, int sickLeave, int unpaidLeave, int remainPaid, int remainSick) async {
+  Future<Map<String, dynamic>> postLeave(
+    String type,
+    String fromDate,
+    String toDate,
+    String reasonOfLeave,
+    int totalDays,
+    int paidLeave,
+    int sickLeave,
+    int unpaidLeave,
+  ) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     int empId = preferences.getInt('id');
-
+    var token = preferences.getString('token');
+    var result;
     final Map<String, dynamic> logData = {
       'apply_date': DateTime.now().toString(),
       'from': fromDate,
@@ -230,10 +239,6 @@ class AttendanceService {
       'status': 'notapproved',
       'total_days': totalDays,
     };
-
-    var result;
-    var token = preferences.getString('token');
-
     Response response = await post(
       Utils.post_leave_url + "$empId",
       body: json.encode(logData),
@@ -243,75 +248,70 @@ class AttendanceService {
         'Authorization': 'Bearer $token'
       },
     );
-    // .then(updateLeaves).catchError(onError);
+
+    if (response.statusCode == 200) {
+      result = {'status': true, 'message': 'code ${response.statusCode},${response.body} '};
+      print("success $result");
+    } else {
+      result = {'status': true, 'message': 'code ${response.statusCode},${response.body} '};
+      print("failed $result");
+    }
+    return jsonDecode(response.body);
+  }
+
+  Future<Map<String, dynamic>> updateLeavesCount(int remainPaid, int remainSick) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    int empId = preferences.getInt('id');
+    var slug = preferences.getString('slug');
+    var token = preferences.getString('token');
+    var result;
+    final Map<String, dynamic> leaveData = {
+      'unsc_leave': remainPaid,
+      'sick_leave': remainSick,
+    };
+
+    Response response = await post(
+      Utils.update_employee_info_url + "$slug" + Utils.PS + "$empId",
+      body: json.encode(leaveData),
+      headers: {
+        'Content-Type': 'application/json',
+        'accept': 'application/json',
+        'Authorization': 'Bearer $token'
+      },
+    );
     if (response.statusCode == 200) {
       result = {'status': true, 'message': 'code ${response.statusCode},${response.body} '};
       print(result);
     } else {
-      result = {'status': false, 'message': 'code ${response.statusCode},${response.body}'};
+      result = {'status': true, 'message': 'code ${response.statusCode}'};
       print(result);
     }
-
     return jsonDecode(response.body);
   }
 
-  // static onError(error) {
-  //   print("the error is $error.detail");
-  //   return {'status': false, 'message': 'Unsuccessful Request', 'data': error};
-  // }
-  //
-  // Future<FutureOr> updateLeaves(Response resp) async {
-  //   SharedPreferences preferences = await SharedPreferences.getInstance();
-  //   int empId = preferences.getInt('id');
-  //   var result;
-  //   var token = preferences.getString('token');
-  //   var name = preferences.getString('name');
-  //   var remainPaid = preferences.getInt('remainPaid');
-  //   var remainSick = preferences.getInt('remainSick');
-  //
-  //   final Map<String, dynamic> leaveData = {
-  //     'unsc_leave': remainPaid,
-  //     'sick_leave': remainSick,
-  //   };
-  //   resp = await post(
-  //     Utils.update_employee_info_url + Utils.PS + "$name" + Utils.PS + "$empId",
-  //     body: json.encode(leaveData),
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       'accept': 'application/json',
-  //       'Authorization': 'Bearer $token'
-  //     },
-  //   );
-  //   if (resp.statusCode == 200) {
-  //     result = {'status': true, 'message': 'code ${resp.statusCode},${resp.body} '};
-  //     print(result);
-  //   } else {
-  //     result = {'status': true, 'message': 'code ${resp.statusCode},${resp.body} '};
-  //     print(result);
-  //   }
-  //   return jsonDecode(resp.body);
-  // }
-
   Stream<List<LeaveListLog>> getLeavesList() {
-    Future.delayed(const Duration(microseconds: 250), () async {
-      SharedPreferences preferences = await SharedPreferences.getInstance();
-      String authToken = preferences.getString('token');
-      int empId = preferences.getInt('id');
-      Response response;
-      if (authToken != null)
-        response = await get(
-          Utils.get_leave_url + '$empId',
-          headers: {'Authorization': 'Bearer $authToken'},
-        );
-      if (response != null) {
-        _leaveList = (json.decode(response.body)['Employee Leave Info'] as List)
-            .map((e) => LeaveListLog.fromJson(e))
-            .toList();
-        _leaveListCntl.sink.add(_leaveList);
-      } else {
-        _leaveListCntl.sink.add([]);
-      }
-    });
+    Future.delayed(
+      const Duration(microseconds: 250),
+      () async {
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+        String authToken = preferences.getString('token');
+        int empId = preferences.getInt('id');
+        Response response;
+        if (authToken != null)
+          response = await get(
+            Utils.get_leave_url + '$empId',
+            headers: {'Authorization': 'Bearer $authToken'},
+          );
+        if (response != null) {
+          _leaveList = (json.decode(response.body)['Employee Leave Info'] as List)
+              .map((e) => LeaveListLog.fromJson(e))
+              .toList();
+          _leaveListCntl.sink.add(_leaveList);
+        } else {
+          _leaveListCntl.sink.add([]);
+        }
+      },
+    );
     return _leaveListCntl.stream;
   }
 
@@ -330,6 +330,7 @@ class AttendanceService {
         _getEmpInfo = (json.decode(response.body)['Employee Leave Info'] as List)
             .map((e) => EmployeeInformation.fromJson(e))
             .toList();
+        preferences.setString("slug", _getEmpInfo.first.slug);
         _getEmpInfoStrmCntl.sink.add(_getEmpInfo);
       } else {
         _getEmpInfoStrmCntl.sink.add([]);

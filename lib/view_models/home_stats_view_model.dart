@@ -19,23 +19,19 @@ class HomeStatsViewModel extends BaseViewModel {
 
   List<TodayLog> get logList => _logList;
 
-  initialise() {
-    setBusy(true);
+  Future initialise() async {
     _attendanceService.getEmployeeInfo().listen((event) {
       _getEmpInfo = event;
-      setBusy(false);
     });
   }
 
-  getLeaveCount() {
-    setBusy(true);
+  Future getLeaveCount() async {
     _attendanceService.getLeavesList().listen((event) {
       _leaveList = event;
-      setBusy(false);
     });
   }
 
-  getLogList() {
+  Future getLogList() async {
     setBusy(true);
     _attendanceService.getTodayLogList().listen((event) {
       _logList = event;

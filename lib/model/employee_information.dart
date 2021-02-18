@@ -1,6 +1,7 @@
 class EmployeeInformation {
   EmployeeInformation({
     this.id,
+    this.slug,
     this.joiningDate,
     this.probetion,
     this.empType,
@@ -10,6 +11,7 @@ class EmployeeInformation {
   });
 
   int id;
+  String slug;
   dynamic joiningDate;
   int probetion;
   String empType;
@@ -19,6 +21,7 @@ class EmployeeInformation {
 
   factory EmployeeInformation.fromJson(Map<String, dynamic> json) => EmployeeInformation(
         id: json["id"],
+        slug: json["slug"],
         joiningDate: json["joining_date"] == null ? null : DateTime.parse(json["joining_date"]),
         probetion: json["probetion"],
         empType: json["emp_type"],
@@ -29,6 +32,7 @@ class EmployeeInformation {
 
   Map<String, dynamic> toJson() => {
         "id": id,
+        "slug": slug,
         "joining_date": joiningDate,
         "probetion": probetion,
         "emp_type": empType,

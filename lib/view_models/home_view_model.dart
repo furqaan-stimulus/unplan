@@ -27,8 +27,6 @@ class HomeViewModel extends BaseViewModel {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setBusy(true);
     _name = preferences.getString('name');
-    notifyListeners();
-    setBusy(false);
     return _name;
   }
 
@@ -41,11 +39,9 @@ class HomeViewModel extends BaseViewModel {
 
   String get logType => _logType;
 
-  initialise() {
-    setBusy(true);
+  Future initialise() async {
     _attendanceService.getLogToday().listen((event) {
       _logs = event;
-      setBusy(false);
     });
   }
 
@@ -53,7 +49,6 @@ class HomeViewModel extends BaseViewModel {
     setBusy(true);
     _attendanceService.getLogToday().listen((event) {
       _logType = event.last.type;
-      notifyListeners();
     });
     return _logType;
   }
@@ -73,7 +68,6 @@ class HomeViewModel extends BaseViewModel {
   }
 
   Future getAddressFromLatLng() async {
-    setBusy(true);
     try {
       List<Placemark> p = await placemarkFromCoordinates(
           double.parse((currentPosition.latitude).toStringAsFixed(2)),
@@ -84,24 +78,21 @@ class HomeViewModel extends BaseViewModel {
     } catch (e) {
       print(e);
     }
-    setBusy(false);
   }
 
   Future initializeNotification() async {
-    DateTime notificationDate = DateTime(DateTime.now().year,
-        DateTime.now().month, DateTime.now().day, 19, 25, 00);
-    DateTime notificationDate1 = DateTime(DateTime.now().year,
-        DateTime.now().month, DateTime.now().day, 21, 30, 00);
-    DateTime notificationDate2 = DateTime(DateTime.now().year,
-        DateTime.now().month, DateTime.now().day, 23, 30, 00);
+    DateTime notificationDate =
+        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 19, 25, 00);
+    DateTime notificationDate1 =
+        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 21, 30, 00);
+    DateTime notificationDate2 =
+        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 23, 30, 00);
 
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-        'unplan_channel_id', 'Unplan', 'Unplan',
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails('unplan_channel_id', 'Unplan', 'Unplan',
         priority: Priority.high, importance: Importance.max);
     var iOSPlatformChannelSpecifics = IOSNotificationDetails();
-    NotificationDetails platformChannelSpecifics = NotificationDetails(
-        android: androidPlatformChannelSpecifics,
-        iOS: iOSPlatformChannelSpecifics);
+    NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics, iOS: iOSPlatformChannelSpecifics);
 
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String authToken = preferences.getString('token');
@@ -124,34 +115,28 @@ class HomeViewModel extends BaseViewModel {
             0,
             'Sign Off!',
             "Did you finish your day?",
-            tz.TZDateTime.from(notificationDate, tz.local)
-                .add(const Duration(seconds: 5)),
+            tz.TZDateTime.from(notificationDate, tz.local).add(const Duration(seconds: 5)),
             platformChannelSpecifics,
             androidAllowWhileIdle: true,
-            uiLocalNotificationDateInterpretation:
-                UILocalNotificationDateInterpretation.absoluteTime);
+            uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime);
 
         await MyApp.notifications.zonedSchedule(
             1,
             'Alert!!',
             "Did you forget to logout?",
-            tz.TZDateTime.from(notificationDate1, tz.local)
-                .add(const Duration(seconds: 5)),
+            tz.TZDateTime.from(notificationDate1, tz.local).add(const Duration(seconds: 5)),
             platformChannelSpecifics,
             androidAllowWhileIdle: true,
-            uiLocalNotificationDateInterpretation:
-                UILocalNotificationDateInterpretation.absoluteTime);
+            uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime);
 
         await MyApp.notifications.zonedSchedule(
             2,
             'Alert!!',
             "You will be clocked-out in 29 minutes.",
-            tz.TZDateTime.from(notificationDate2, tz.local)
-                .add(const Duration(seconds: 5)),
+            tz.TZDateTime.from(notificationDate2, tz.local).add(const Duration(seconds: 5)),
             platformChannelSpecifics,
             androidAllowWhileIdle: true,
-            uiLocalNotificationDateInterpretation:
-                UILocalNotificationDateInterpretation.absoluteTime);
+            uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime);
       }
     }
   }

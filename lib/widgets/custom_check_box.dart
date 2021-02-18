@@ -13,7 +13,7 @@ class _CustomCheckBoxState extends State<CustomCheckBox> {
       height: 25,
       width: 25,
       decoration: BoxDecoration(
-        color: ViewColor.text_white_color,
+        color: ViewColor.background_white_color,
         border: Border.all(color: ViewColor.text_black_variant_color, width: 1),
       ),
     );

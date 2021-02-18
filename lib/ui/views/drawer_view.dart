@@ -123,18 +123,18 @@ class _DrawerViewState extends State<DrawerView> {
                       SizedBox(
                         height: 15,
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          FocusManager.instance.primaryFocus.unfocus();
-                          FocusScope.of(context).unfocus();
-                          Navigator.of(context).pop();
-                          model.logout();
-                        },
-                        child: Text(
-                          Utils.drawerText4,
-                          style: TextStyles.homeBottomText,
-                        ),
-                      ),
+                      // GestureDetector(
+                      //   onTap: () {
+                      //     FocusManager.instance.primaryFocus.unfocus();
+                      //     FocusScope.of(context).unfocus();
+                      //     Navigator.of(context).pop();
+                      //     model.logout();
+                      //   },
+                      //   child: Text(
+                      //     Utils.drawerText4,
+                      //     style: TextStyles.homeBottomText,
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),

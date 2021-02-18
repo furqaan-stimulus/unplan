@@ -9,11 +9,9 @@ class LeaveListLogViewModel extends BaseViewModel {
 
   List<LeaveListLog> get leaveList => _leaveList;
 
-  initialise() {
-    setBusy(true);
+  Future initialise() async{
     _attendanceService.getLeavesList().listen((event) {
       _leaveList = event;
-      setBusy(false);
     });
   }
 }

@@ -12,16 +12,15 @@ class LeaveFormViewModel extends BaseViewModel {
 
   postLeave(String type, String fromDate, String toDate, String reasonOfLeave, int totalDays, int paidLeave,
       int sickLeave, int unpaidLeave, int remainPaid, int remainSick) async {
-    await _attendanceService.postLeave(type, fromDate, toDate, reasonOfLeave, totalDays, paidLeave, sickLeave,
-        unpaidLeave, remainPaid, remainSick);
+    await _attendanceService.postLeave(
+        type, fromDate, toDate, reasonOfLeave, totalDays, paidLeave, sickLeave, unpaidLeave);
+    await _attendanceService.updateLeavesCount(remainPaid, remainSick);
     notifyListeners();
   }
 
-  initialise() {
-    setBusy(true);
+  Future initialise() async{
     _attendanceService.getEmployeeInfo().listen((event) {
       _getEmpInfo = event;
-      setBusy(false);
     });
   }
 }

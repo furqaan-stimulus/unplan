@@ -53,20 +53,17 @@ class HomeLogViewModel extends BaseViewModel {
   final AttendanceService _attendanceService = getIt<AttendanceService>();
 
   Future getLogType() async {
-    setBusy(true);
     _attendanceService.getLogToday().listen((event) {
       if (_logType != null) {
         _logType = event.last.type;
       } else {
         _logs = event;
       }
-      notifyListeners();
     });
     return _logType;
   }
 
   Future getCurrentLocation() async {
-    setBusy(true);
     Geolocator.getPositionStream(
       desiredAccuracy: LocationAccuracy.high,
       distanceFilter: 10,
@@ -74,48 +71,37 @@ class HomeLogViewModel extends BaseViewModel {
     ).listen((Position position) {
       _currentPosition = position;
       getAddressFromLatLng();
-      notifyListeners();
     });
-    setBusy(false);
   }
 
   Future getAddressFromLatLng() async {
-    setBusy(true);
     try {
-      List<Placemark> p = await placemarkFromCoordinates(double.parse((currentPosition.latitude).toStringAsFixed(2)),
+      List<Placemark> p = await placemarkFromCoordinates(
+          double.parse((currentPosition.latitude).toStringAsFixed(2)),
           double.parse((currentPosition.longitude).toStringAsFixed(2)));
       Placemark place = p[0];
       _currentAddress = "${place.subLocality}, ${place.locality}";
-      notifyListeners();
     } catch (e) {
       print(e);
     }
-    setBusy(false);
   }
 
-  initialise() {
-    setBusy(true);
+  Future initialise() async {
     _attendanceService.getLogToday().listen((event) {
       _logType = event.last.type;
     });
-    setBusy(false);
   }
 
-  fetchLogs() {
-    setBusy(true);
+  Future fetchLogs() async {
     _attendanceService.getLogToday().listen((event) {
       _logs = event;
     });
-    setBusy(false);
   }
 
-  fetchAddress() {
-    setBusy(true);
+  Future fetchAddress() async {
     _attendanceService.getUserAddress().listen((event) {
       _addressDetail = event;
-      notifyListeners();
     });
-    setBusy(false);
   }
 
   getLastLog(LogType type) {
@@ -135,19 +121,18 @@ class HomeLogViewModel extends BaseViewModel {
 
   markClockOut() async {
     double totalHour = DateTimeFormat.calculateHoursForSingleDay(_logList);
-    print("total: ${totalHour.toInt()}");
     int present = 0;
-    // if (totalHour.toInt() >= 4) {
-    //   print("if");
-    //   await _attendanceService.markLog(Utils.CLOCKOUT, _currentAddress, currentPosition.latitude,
-    //       currentPosition.longitude, present++, totalHour.toInt());
-    // } else {
-    //   print("else");
-    //   await _attendanceService.markLog(
-    //       Utils.CLOCKOUT, _currentAddress, currentPosition.latitude, currentPosition.longitude, 0, totalHour.toInt());
-    // }
-    await _attendanceService.markLog(
-        Utils.CLOCKOUT, _currentAddress, currentPosition.latitude, currentPosition.longitude, present++, totalHour);
+    if (totalHour.toInt() >= 4) {
+      print("if");
+      await _attendanceService.markLog(Utils.CLOCKOUT, _currentAddress, currentPosition.latitude,
+          currentPosition.longitude, present++, totalHour);
+    } else {
+      print("else");
+      await _attendanceService.markLog(Utils.CLOCKOUT, _currentAddress, currentPosition.latitude,
+          currentPosition.longitude, present, totalHour);
+    }
+    // await _attendanceService.markLog(Utils.CLOCKOUT, _currentAddress, currentPosition.latitude,
+    //     currentPosition.longitude, present++, totalHour);
   }
 
   markClockTimeOut() async {

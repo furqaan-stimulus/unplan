@@ -6,7 +6,6 @@ import 'package:unplan/app/router.gr.dart';
 import 'package:unplan/model/personal_information.dart';
 import 'package:unplan/services/attendance_service.dart';
 
-
 class PersonalInfoViewModel extends BaseViewModel {
   final AttendanceService _attendanceService = getIt<AttendanceService>();
   final NavigationService _navigationService = getIt<NavigationService>();
@@ -32,11 +31,11 @@ class PersonalInfoViewModel extends BaseViewModel {
     await _navigationService.pushNamedAndRemoveUntil(Routes.homeView);
   }
 
-  initialise() {
-    setBusy(true);
-    _attendanceService.getUserProfile().listen((event) {
-      _userDataList = event;
-      setBusy(false);
-    });
+  Future initialise() async {
+    _attendanceService.getUserProfile().listen(
+      (event) {
+        _userDataList = event;
+      },
+    );
   }
 }

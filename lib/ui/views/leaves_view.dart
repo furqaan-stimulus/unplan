@@ -167,13 +167,18 @@ class _LeavesViewState extends State<LeavesView> {
                                 width: 40,
                                 height: 40,
                                 child: Center(
-                                  child: Text(
-                                    (model.hasError)
-                                        ? ''
-                                        : (model.getEmpInfo.length == 0)
+                                  child: FutureBuilder(
+                                    future: model.initialise(),
+                                    builder: (context, snapshot) {
+                                      return Text(
+                                        (model.hasError)
                                             ? ''
-                                            : "${model.getEmpInfo.first.sickLeave}",
-                                    style: TextStyles.leaveText,
+                                            : (model.getEmpInfo.length == 0)
+                                                ? ''
+                                                : "${model.getEmpInfo.first.sickLeave}",
+                                        style: TextStyles.leaveText,
+                                      );
+                                    },
                                   ),
                                 ),
                                 decoration: BoxDecoration(
