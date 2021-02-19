@@ -36,7 +36,8 @@ class LocationService {
 
   Future getAddressFromLatLng() async {
     try {
-      List<Placemark> p = await placemarkFromCoordinates(double.parse((_officeLat).toStringAsFixed(2)),
+      List<Placemark> p = await placemarkFromCoordinates(
+          double.parse((_officeLat).toStringAsFixed(2)),
           double.parse((_officeLong).toStringAsFixed(2)));
       Placemark place = p[0];
       _currentAddress = "${place.subLocality}, ${place.locality}";

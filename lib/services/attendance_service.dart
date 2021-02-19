@@ -261,10 +261,10 @@ class AttendanceService {
     );
 
     if (response.statusCode == 200) {
-      result = {'status': true, 'message': 'code ${response.statusCode},${response.body} '};
+      result = {'status': true, 'message': 'code ${response.statusCode},${response.body}'};
       print("success $result");
     } else {
-      result = {'status': true, 'message': 'code ${response.statusCode},${response.body} '};
+      result = {'status': true, 'message': 'code ${response.statusCode},${response.body}'};
       print("failed $result");
     }
     return jsonDecode(response.body);
@@ -327,30 +327,99 @@ class AttendanceService {
   }
 
   Stream<List<EmployeeInformation>> getEmployeeInfo() {
-    Future.delayed(const Duration(microseconds: 250), () async {
-      SharedPreferences preferences = await SharedPreferences.getInstance();
-      String authToken = preferences.getString('token');
-      int empId = preferences.getInt('id');
-      Response response;
-      if (authToken != null)
-        response = await get(
-          Utils.get_employee_info_url + '$empId',
-          headers: {'Authorization': 'Bearer $authToken'},
-        );
-      if (response != null) {
-        _getEmpInfo = (json.decode(response.body)['Employee Leave Info'] as List)
-            .map((e) => EmployeeInformation.fromJson(e))
-            .toList();
-        preferences.setString("slug", _getEmpInfo.first.slug);
-        _getEmpInfoStrmCntl.sink.add(_getEmpInfo);
-      } else {
-        _getEmpInfoStrmCntl.sink.add([]);
-      }
-    });
+    Future.delayed(
+      const Duration(microseconds: 250),
+      () async {
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+        String authToken = preferences.getString('token');
+        int empId = preferences.getInt('id');
+        Response response;
+        if (authToken != null)
+          response = await get(
+            Utils.get_employee_info_url + '$empId',
+            headers: {'Authorization': 'Bearer $authToken'},
+          );
+        if (response != null) {
+          _getEmpInfo = (json.decode(response.body)['Employee Leave Info'] as List)
+              .map((e) => EmployeeInformation.fromJson(e))
+              .toList();
+          preferences.setString("slug", _getEmpInfo.first.slug);
+          _getEmpInfoStrmCntl.sink.add(_getEmpInfo);
+        } else {
+          _getEmpInfoStrmCntl.sink.add([]);
+        }
+      },
+    );
     return _getEmpInfoStrmCntl.stream;
   }
 
-  Stream<List<TodayLog>> getPresentLog() {
+  Stream<List<TodayLog>> getMonthlyPresentLog() {
+    Future.delayed(
+      const Duration(microseconds: 250),
+      () async {
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+        String authToken = preferences.getString('token');
+        int empId = preferences.getInt('id');
+        Response response;
+        DateTime now = DateTime.now();
+
+        var queryParameters = {
+          'date': DateTime(now.year, now.month, 15).toString(),
+        };
+
+        var uri = Uri.https('dev.stimulusco.com', '/api/attendenceByDate/$empId', queryParameters);
+        if (authToken != null)
+          response = await get(
+            uri,
+            headers: {'Authorization': 'Bearer $authToken'},
+          );
+        if (response != null) {
+          _presentList = (json.decode(response.body)['Attendence Data'] as List)
+              .map((e) => TodayLog.fromJson(e))
+              .toList();
+          _logPresentMonth.sink.add(_presentList);
+        } else {
+          _logPresentMonth.sink.add([]);
+        }
+      },
+    );
+    return _logPresentMonth.stream;
+  }
+
+  Stream<List<TodayLog>> getYearlyLeaveLog() {
+    Future.delayed(
+      const Duration(microseconds: 250),
+      () async {
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+        String authToken = preferences.getString('token');
+        int empId = preferences.getInt('id');
+        Response response;
+        DateTime now = DateTime.now();
+
+        var queryParameters = {
+          'date': DateTime(now.year, now.month, 15).toString(),
+        };
+
+        var uri = Uri.https('dev.stimulusco.com', '/api/attendenceByDate/$empId', queryParameters);
+        if (authToken != null)
+          response = await get(
+            uri,
+            headers: {'Authorization': 'Bearer $authToken'},
+          );
+        if (response != null) {
+          _presentList = (json.decode(response.body)['Attendence Data'] as List)
+              .map((e) => TodayLog.fromJson(e))
+              .toList();
+          _logPresentMonth.sink.add(_presentList);
+        } else {
+          _logPresentMonth.sink.add([]);
+        }
+      },
+    );
+    return _logPresentMonth.stream;
+  }
+
+  Stream<List<TodayLog>> getMonthlyLeaveLog() {
     Future.delayed(
       const Duration(microseconds: 250),
       () async {

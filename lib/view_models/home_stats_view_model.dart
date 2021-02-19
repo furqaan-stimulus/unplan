@@ -3,7 +3,6 @@ import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:unplan/app/locator.dart';
-import 'package:unplan/model/attendance_log.dart';
 import 'package:unplan/model/employee_information.dart';
 import 'package:unplan/model/leave_list_log.dart';
 import 'package:unplan/model/today_log.dart';
@@ -42,7 +41,7 @@ class HomeStatsViewModel extends BaseViewModel {
   }
 
   Future getPresentCount() async {
-    _attendanceService.getPresentLog().listen((event) {
+    _attendanceService.getMonthlyPresentLog().listen((event) {
       _logPresentList = event;
     });
   }
@@ -56,9 +55,7 @@ class HomeStatsViewModel extends BaseViewModel {
   Future<bool> isInternet() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile) {
-      // I am connected to a mobile network, make sure there is actually a net connection.
       if (await DataConnectionChecker().hasConnection) {
-        // Mobile data detected & internet connection confirmed.
         return true;
       } else {
         _dialogService.showDialog(
@@ -69,9 +66,7 @@ class HomeStatsViewModel extends BaseViewModel {
         return false;
       }
     } else if (connectivityResult == ConnectivityResult.wifi) {
-      // I am connected to a WIFI network, make sure there is actually a net connection.
       if (await DataConnectionChecker().hasConnection) {
-        // Wifi detected & internet connection confirmed.
         return true;
       } else {
         _dialogService.showDialog(

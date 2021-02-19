@@ -9,6 +9,7 @@ import 'package:injectable/injectable.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 import '../services/attendance_service.dart';
+import '../services/auth_service.dart';
 import '../services/location_service.dart';
 import '../services/shared_pref_service.dart';
 import '../services/third_party_service_module.dart';
@@ -25,6 +26,7 @@ GetIt $initGetIt(
   final thirdPartyServiceModule = _$ThirdPartyServiceModule();
   gh.lazySingleton<AttendanceService>(
       () => thirdPartyServiceModule.attendanceService);
+  gh.lazySingleton<AuthService>(() => thirdPartyServiceModule.authService);
   gh.lazySingleton<DialogService>(() => thirdPartyServiceModule.dialogService);
   gh.lazySingleton<LocationService>(
       () => thirdPartyServiceModule.locationService);
@@ -40,6 +42,8 @@ GetIt $initGetIt(
 class _$ThirdPartyServiceModule extends ThirdPartyServiceModule {
   @override
   AttendanceService get attendanceService => AttendanceService();
+  @override
+  AuthService get authService => AuthService();
   @override
   DialogService get dialogService => DialogService();
   @override

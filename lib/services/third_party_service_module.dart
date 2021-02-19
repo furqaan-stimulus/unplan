@@ -1,6 +1,7 @@
 import 'package:injectable/injectable.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:unplan/services/attendance_service.dart';
+import 'package:unplan/services/auth_service.dart';
 import 'package:unplan/services/location_service.dart';
 import 'package:unplan/services/shared_pref_service.dart';
 
@@ -23,4 +24,7 @@ abstract class ThirdPartyServiceModule {
 
   @lazySingleton
   LocationService get locationService;
+
+  @lazySingleton
+  AuthService get authService;
 }

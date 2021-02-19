@@ -11,6 +11,7 @@ import 'package:unplan/model/attendance_log.dart';
 import 'package:unplan/model/today_log.dart';
 import 'package:unplan/services/attendance_service.dart';
 import 'package:unplan/model/address_detail.dart';
+import 'package:unplan/services/location_service.dart';
 import 'package:unplan/utils/utils.dart';
 
 class HomeLogViewModel extends BaseViewModel {
@@ -59,6 +60,13 @@ class HomeLogViewModel extends BaseViewModel {
 
   final AttendanceService _attendanceService = getIt<AttendanceService>();
   final DialogService _dialogService = getIt<DialogService>();
+  final LocationService _locationService = getIt<LocationService>();
+
+  Future getLocation() async {
+    var position = await _locationService.getCurrentLocation();
+    var latlong = position.toString();
+    print("position: $latlong");
+  }
 
   Future getLogType() async {
     _attendanceService.getLogToday().listen((event) {
@@ -90,7 +98,8 @@ class HomeLogViewModel extends BaseViewModel {
 
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.deniedForever) {
-      return Future.error('Location permissions are permanently denied, we cannot request permissions.');
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
     }
 
     if (permission == LocationPermission.denied) {
@@ -176,8 +185,8 @@ class HomeLogViewModel extends BaseViewModel {
             currentPosition.longitude, present + 1, totalHour);
       } else {
         print("else1");
-        await _attendanceService.markLog(
-            Utils.CLOCKOUT, _currentAddress, currentPosition.latitude, currentPosition.longitude, present, 0);
+        await _attendanceService.markLog(Utils.CLOCKOUT, _currentAddress, currentPosition.latitude,
+            currentPosition.longitude, present, 0);
       }
     } else {
       if (totalHour > 7.00) {
@@ -186,8 +195,8 @@ class HomeLogViewModel extends BaseViewModel {
             currentPosition.longitude, present + 1, totalHour);
       } else {
         print("else2");
-        await _attendanceService.markLog(
-            Utils.CLOCKOUT, _currentAddress, currentPosition.latitude, currentPosition.longitude, present, 0);
+        await _attendanceService.markLog(Utils.CLOCKOUT, _currentAddress, currentPosition.latitude,
+            currentPosition.longitude, present, 0);
       }
     }
   }

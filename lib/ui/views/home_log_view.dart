@@ -62,8 +62,7 @@ class _HomeLogViewState extends State<HomeLogView> {
                     builder: (context, snapshot) {
                       if (snapshot.hasError) {
                         return FlatButton(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                           color: ViewColor.button_grey_color,
                           onPressed: () {
                             model.getCurrentLocation();
@@ -94,8 +93,7 @@ class _HomeLogViewState extends State<HomeLogView> {
                         );
                       } else if (snapshot.data == null) {
                         return FlatButton(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                           color: (model.logType == null)
                               ? ViewColor.button_grey_color
                               : (model.logs.last.type == Utils.CLOCKIN)
@@ -114,17 +112,13 @@ class _HomeLogViewState extends State<HomeLogView> {
                                     return Center(child: Text(''));
                                   } else {
                                     officeDist = Geolocator.distanceBetween(
-                                        double.parse((model.addressDetail.first
-                                            .officeLatitude)),
-                                        double.parse((model.addressDetail.first
-                                            .officeLongitude)),
+                                        double.parse((model.addressDetail.first.officeLatitude)),
+                                        double.parse((model.addressDetail.first.officeLongitude)),
                                         model.currentPosition.latitude,
                                         model.currentPosition.longitude);
                                     homeDist = Geolocator.distanceBetween(
-                                        double.parse((model
-                                            .addressDetail.first.homeLatitude)),
-                                        double.parse((model.addressDetail.first
-                                            .homeLongitude)),
+                                        double.parse((model.addressDetail.first.homeLatitude)),
+                                        double.parse((model.addressDetail.first.homeLongitude)),
                                         model.currentPosition.latitude,
                                         model.currentPosition.longitude);
                                   }
@@ -154,10 +148,8 @@ class _HomeLogViewState extends State<HomeLogView> {
                                         ),
                                       ),
                                       child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
                                           (model.currentPosition != null)
                                               ? (officeDist <= 10.0)
@@ -184,65 +176,52 @@ class _HomeLogViewState extends State<HomeLogView> {
                                           (model.logType == null)
                                               ? Text(
                                                   'Logging out from',
-                                                  style: TextStyles
-                                                      .buttonTextStyle2,
+                                                  style: TextStyles.buttonTextStyle2,
                                                 )
                                               : (model.logType == Utils.CLOCKIN)
                                                   ? Text(
                                                       'Logging out from',
-                                                      style: TextStyles
-                                                          .buttonTextStyle2,
+                                                      style: TextStyles.buttonTextStyle2,
                                                     )
                                                   : Text(
                                                       'You are',
-                                                      style: TextStyles
-                                                          .buttonTextStyle2,
+                                                      style: TextStyles.buttonTextStyle2,
                                                     ),
                                           SizedBox(
                                             height: 5.0,
                                           ),
-                                          (model.logs.last.type ==
-                                                      Utils.CLOCKOUT ||
-                                                  model.logs.last.type ==
-                                                      Utils.TIMEOUT)
+                                          (model.logs.last.type == Utils.CLOCKOUT ||
+                                                  model.logs.last.type == Utils.TIMEOUT)
                                               ? (model.currentPosition != null)
                                                   ? (officeDist <= 10.0)
                                                       ? Text(
                                                           Utils.officeLocation,
-                                                          style: TextStyles
-                                                              .bottomTextStyle,
+                                                          style: TextStyles.bottomTextStyle,
                                                         )
                                                       : (homeDist <= 10.0)
                                                           ? Text(
-                                                              Utils
-                                                                  .homeLocation,
-                                                              style: TextStyles
-                                                                  .bottomTextStyle,
+                                                              Utils.homeLocation,
+                                                              style: TextStyles.bottomTextStyle,
                                                             )
                                                           : Text(
-                                                              Utils
-                                                                  .unknownLocation,
-                                                              style: TextStyles
-                                                                  .bottomTextStyle,
+                                                              Utils.unknownLocation,
+                                                              style: TextStyles.bottomTextStyle,
                                                             )
                                                   : Text('')
                                               : (model.currentPosition != null)
                                                   ? (officeDist <= 10.0)
                                                       ? Text(
                                                           Utils.office,
-                                                          style: TextStyles
-                                                              .bottomTextStyle,
+                                                          style: TextStyles.bottomTextStyle,
                                                         )
                                                       : (homeDist <= 10.0)
                                                           ? Text(
                                                               Utils.home,
-                                                              style: TextStyles
-                                                                  .bottomTextStyle,
+                                                              style: TextStyles.bottomTextStyle,
                                                             )
                                                           : Text(
                                                               Utils.unknown,
-                                                              style: TextStyles
-                                                                  .bottomTextStyle,
+                                                              style: TextStyles.bottomTextStyle,
                                                             )
                                                   : Text(''),
                                           SizedBox(
@@ -252,79 +231,59 @@ class _HomeLogViewState extends State<HomeLogView> {
                                               ? (officeDist <= 10.0)
                                                   ? Text(
                                                       model.currentAddress,
-                                                      style: TextStyles
-                                                          .bottomTextStyle2,
+                                                      style: TextStyles.bottomTextStyle2,
                                                     )
                                                   : (homeDist <= 10.0)
                                                       ? Text(
                                                           model.currentAddress,
-                                                          style: TextStyles
-                                                              .bottomTextStyle2,
+                                                          style: TextStyles.bottomTextStyle2,
                                                         )
                                                       : Text(
                                                           model.currentAddress,
-                                                          style: TextStyles
-                                                              .bottomTextStyle2,
+                                                          style: TextStyles.bottomTextStyle2,
                                                         )
                                               : Text(''),
                                           SizedBox(
                                             height: 10.0,
                                           ),
-                                          (model.logs.last.type ==
-                                                      Utils.CLOCKOUT ||
-                                                  model.logs.last.type ==
-                                                      Utils.TIMEOUT)
-                                              ? (DateTimeFormat.difference()
-                                                          .inMinutes <=
-                                                      5)
+                                          (model.logs.last.type == Utils.CLOCKOUT ||
+                                                  model.logs.last.type == Utils.TIMEOUT)
+                                              ? (DateTimeFormat.difference().inMinutes <= 5)
                                                   ? Text(
                                                       Utils.early,
-                                                      style: TextStyles
-                                                          .bottomTextStyle3,
+                                                      style: TextStyles.bottomTextStyle3,
                                                     )
-                                                  : (DateTimeFormat.difference()
-                                                              .inMinutes <=
-                                                          20)
+                                                  : (DateTimeFormat.difference().inMinutes <= 20)
                                                       ? Text(
                                                           Utils.late,
-                                                          style: TextStyles
-                                                              .alertTextStyle,
+                                                          style: TextStyles.alertTextStyle,
                                                         )
-                                                      : (DateTimeFormat
-                                                                      .difference()
-                                                                  .inMinutes <=
+                                                      : (DateTimeFormat.difference().inMinutes <=
                                                               60)
                                                           ? Text(
                                                               Utils.veryLate,
-                                                              style: TextStyles
-                                                                  .alertTextStyle1,
+                                                              style: TextStyles.alertTextStyle1,
                                                             )
-                                                          : (DateTimeFormat
-                                                                          .difference()
+                                                          : (DateTimeFormat.difference()
                                                                       .inMinutes <=
                                                                   210)
                                                               ? Text(
                                                                   Utils.halfDay,
-                                                                  style: TextStyles
-                                                                      .alertTextStyle1,
+                                                                  style: TextStyles.alertTextStyle1,
                                                                 )
                                                               : Text(
                                                                   '',
-                                                                  style: TextStyles
-                                                                      .alertTextStyle1,
+                                                                  style: TextStyles.alertTextStyle1,
                                                                 )
                                               : Text(''),
                                           SizedBox(
                                             height: 20.0,
                                           ),
-                                          (model.logs.last.type ==
-                                                      Utils.CLOCKOUT ||
-                                                  model.logs.last.type ==
-                                                      Utils.TIMEOUT)
+                                          (model.logs.last.type == Utils.CLOCKOUT ||
+                                                  model.logs.last.type == Utils.TIMEOUT)
                                               ? ConfirmButton(
                                                   firstLog: true,
-                                                  pressed: model.getLastLog(
-                                                      LogType.clockIn),
+                                                  pressed: model.getLastLog(LogType.clockIn),
                                                   type: LogType.clockIn,
                                                   onPressed: () {
                                                     Navigator.of(context).pop();
@@ -333,62 +292,42 @@ class _HomeLogViewState extends State<HomeLogView> {
                                                       messageText: Center(
                                                         child: Text(
                                                           Utils.msgClockIn,
-                                                          style: TextStyles
-                                                              .notificationTextStyle1,
+                                                          style: TextStyles.notificationTextStyle1,
                                                         ),
                                                       ),
-                                                      backgroundColor: ViewColor
-                                                          .notification_green_color,
-                                                      flushbarPosition:
-                                                          FlushbarPosition.TOP,
-                                                      flushbarStyle:
-                                                          FlushbarStyle
-                                                              .FLOATING,
-                                                      duration:
-                                                          Duration(seconds: 2),
+                                                      backgroundColor:
+                                                          ViewColor.notification_green_color,
+                                                      flushbarPosition: FlushbarPosition.TOP,
+                                                      flushbarStyle: FlushbarStyle.FLOATING,
+                                                      duration: Duration(seconds: 2),
                                                     )..show(context);
                                                   },
                                                 )
                                               : Center(
                                                   child: Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    mainAxisAlignment: MainAxisAlignment.center,
                                                     children: [
                                                       BreakButton(
                                                         type: LogType.timeout,
                                                         firstLog: false,
-                                                        pressed: model
-                                                            .getLastLog(LogType
-                                                                .timeout),
+                                                        pressed: model.getLastLog(LogType.timeout),
                                                         onPressed: () {
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                          model
-                                                              .markClockTimeOut();
+                                                          Navigator.of(context).pop();
+                                                          model.markClockTimeOut();
                                                           Flushbar(
                                                             messageText: Center(
                                                               child: Text(
-                                                                Utils
-                                                                    .msgClockBreak,
+                                                                Utils.msgClockBreak,
                                                                 style: TextStyles
                                                                     .notificationTextStyle1,
                                                               ),
                                                             ),
                                                             backgroundColor:
-                                                                ViewColor
-                                                                    .notification_green_color,
-                                                            flushbarPosition:
-                                                                FlushbarPosition
-                                                                    .TOP,
-                                                            flushbarStyle:
-                                                                FlushbarStyle
-                                                                    .FLOATING,
-                                                            duration: Duration(
-                                                                seconds: 2),
+                                                                ViewColor.notification_green_color,
+                                                            flushbarPosition: FlushbarPosition.TOP,
+                                                            flushbarStyle: FlushbarStyle.FLOATING,
+                                                            duration: Duration(seconds: 2),
                                                           )..show(context);
                                                         },
                                                       ),
@@ -398,38 +337,26 @@ class _HomeLogViewState extends State<HomeLogView> {
                                                       ClockOutButton(
                                                         firstLog: false,
                                                         type: LogType.clockOut,
-                                                        pressed: model
-                                                            .getLastLog(LogType
-                                                                .clockOut),
+                                                        pressed: model.getLastLog(LogType.clockOut),
                                                         onPressed: () {
-                                                          Navigator.of(context)
-                                                              .pop();
+                                                          Navigator.of(context).pop();
 
-                                                          model.markClockOut(
-                                                              DateTimeFormat
-                                                                  .calculateHoursForSingleDay(
-                                                                      model
-                                                                          .logList));
+                                                          model.markClockOut(DateTimeFormat
+                                                              .calculateHoursForSingleDay(
+                                                                  model.logList));
                                                           Flushbar(
                                                             messageText: Center(
                                                               child: Text(
-                                                                Utils
-                                                                    .msgClockOut,
+                                                                Utils.msgClockOut,
                                                                 style: TextStyles
                                                                     .notificationTextStyle1,
                                                               ),
                                                             ),
                                                             backgroundColor:
-                                                                ViewColor
-                                                                    .notification_green_color,
-                                                            flushbarPosition:
-                                                                FlushbarPosition
-                                                                    .TOP,
-                                                            flushbarStyle:
-                                                                FlushbarStyle
-                                                                    .FLOATING,
-                                                            duration: Duration(
-                                                                seconds: 2),
+                                                                ViewColor.notification_green_color,
+                                                            flushbarPosition: FlushbarPosition.TOP,
+                                                            flushbarStyle: FlushbarStyle.FLOATING,
+                                                            duration: Duration(seconds: 2),
                                                           )..show(context);
                                                         },
                                                       ),
@@ -475,8 +402,7 @@ class _HomeLogViewState extends State<HomeLogView> {
                         );
                       } else {
                         return FlatButton(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                           color: (model.logType == null)
                               ? ViewColor.button_grey_color
                               : (model.logs.last.type == Utils.CLOCKIN)
@@ -495,17 +421,13 @@ class _HomeLogViewState extends State<HomeLogView> {
                                     return Center(child: Text(''));
                                   } else {
                                     officeDist = Geolocator.distanceBetween(
-                                        double.parse((model.addressDetail.first
-                                            .officeLatitude)),
-                                        double.parse((model.addressDetail.first
-                                            .officeLongitude)),
+                                        double.parse((model.addressDetail.first.officeLatitude)),
+                                        double.parse((model.addressDetail.first.officeLongitude)),
                                         model.currentPosition.latitude,
                                         model.currentPosition.longitude);
                                     homeDist = Geolocator.distanceBetween(
-                                        double.parse((model
-                                            .addressDetail.first.homeLatitude)),
-                                        double.parse((model.addressDetail.first
-                                            .homeLongitude)),
+                                        double.parse((model.addressDetail.first.homeLatitude)),
+                                        double.parse((model.addressDetail.first.homeLongitude)),
                                         model.currentPosition.latitude,
                                         model.currentPosition.longitude);
                                   }
@@ -535,10 +457,8 @@ class _HomeLogViewState extends State<HomeLogView> {
                                         ),
                                       ),
                                       child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
                                           (model.currentPosition != null)
                                               ? (officeDist <= 10.0)
@@ -565,64 +485,52 @@ class _HomeLogViewState extends State<HomeLogView> {
                                           (model.logType == null)
                                               ? Text(
                                                   'Logging out from',
-                                                  style: TextStyles
-                                                      .buttonTextStyle2,
+                                                  style: TextStyles.buttonTextStyle2,
                                                 )
                                               : (model.logType == Utils.CLOCKIN)
                                                   ? Text(
                                                       'Logging out from',
-                                                      style: TextStyles
-                                                          .buttonTextStyle2,
+                                                      style: TextStyles.buttonTextStyle2,
                                                     )
                                                   : Text(
                                                       'You are',
-                                                      style: TextStyles
-                                                          .buttonTextStyle2,
+                                                      style: TextStyles.buttonTextStyle2,
                                                     ),
                                           SizedBox(
                                             height: 5.0,
                                           ),
                                           (model.logType == Utils.CLOCKOUT ||
-                                                  model.logType ==
-                                                      Utils.CLOCKOUT)
+                                                  model.logType == Utils.CLOCKOUT)
                                               ? (model.currentPosition != null)
                                                   ? (officeDist <= 10.0)
                                                       ? Text(
                                                           Utils.officeLocation,
-                                                          style: TextStyles
-                                                              .bottomTextStyle,
+                                                          style: TextStyles.bottomTextStyle,
                                                         )
                                                       : (homeDist <= 10.0)
                                                           ? Text(
-                                                              Utils
-                                                                  .homeLocation,
-                                                              style: TextStyles
-                                                                  .bottomTextStyle,
+                                                              Utils.homeLocation,
+                                                              style: TextStyles.bottomTextStyle,
                                                             )
                                                           : Text(
-                                                              Utils
-                                                                  .unknownLocation,
-                                                              style: TextStyles
-                                                                  .bottomTextStyle,
+                                                              Utils.unknownLocation,
+                                                              style: TextStyles.bottomTextStyle,
                                                             )
                                                   : Text('')
                                               : (model.currentPosition != null)
                                                   ? (officeDist <= 10.0)
                                                       ? Text(
                                                           Utils.office,
-                                                          style: TextStyles
-                                                              .bottomTextStyle,
+                                                          style: TextStyles.bottomTextStyle,
                                                         )
                                                       : (homeDist <= 10.0)
                                                           ? Text(
                                                               Utils.home,
-                                                              style: TextStyles
-                                                                  .bottomTextStyle,
+                                                              style: TextStyles.bottomTextStyle,
                                                             )
                                                           : Text(
                                                               Utils.unknown,
-                                                              style: TextStyles
-                                                                  .bottomTextStyle,
+                                                              style: TextStyles.bottomTextStyle,
                                                             )
                                                   : Text(''),
                                           SizedBox(
@@ -632,79 +540,59 @@ class _HomeLogViewState extends State<HomeLogView> {
                                               ? (officeDist <= 10.0)
                                                   ? Text(
                                                       model.currentAddress,
-                                                      style: TextStyles
-                                                          .bottomTextStyle2,
+                                                      style: TextStyles.bottomTextStyle2,
                                                     )
                                                   : (homeDist <= 10.0)
                                                       ? Text(
                                                           model.currentAddress,
-                                                          style: TextStyles
-                                                              .bottomTextStyle2,
+                                                          style: TextStyles.bottomTextStyle2,
                                                         )
                                                       : Text(
                                                           model.currentAddress,
-                                                          style: TextStyles
-                                                              .bottomTextStyle2,
+                                                          style: TextStyles.bottomTextStyle2,
                                                         )
                                               : Text(''),
                                           SizedBox(
                                             height: 10.0,
                                           ),
-                                          (model.logs.last.type ==
-                                                      Utils.CLOCKOUT ||
-                                                  model.logs.last.type ==
-                                                      Utils.TIMEOUT)
-                                              ? (DateTimeFormat.difference()
-                                                          .inMinutes <=
-                                                      5)
+                                          (model.logs.last.type == Utils.CLOCKOUT ||
+                                                  model.logs.last.type == Utils.TIMEOUT)
+                                              ? (DateTimeFormat.difference().inMinutes <= 5)
                                                   ? Text(
                                                       Utils.early,
-                                                      style: TextStyles
-                                                          .bottomTextStyle3,
+                                                      style: TextStyles.bottomTextStyle3,
                                                     )
-                                                  : (DateTimeFormat.difference()
-                                                              .inMinutes <=
-                                                          20)
+                                                  : (DateTimeFormat.difference().inMinutes <= 20)
                                                       ? Text(
                                                           Utils.late,
-                                                          style: TextStyles
-                                                              .alertTextStyle,
+                                                          style: TextStyles.alertTextStyle,
                                                         )
-                                                      : (DateTimeFormat
-                                                                      .difference()
-                                                                  .inMinutes <=
+                                                      : (DateTimeFormat.difference().inMinutes <=
                                                               60)
                                                           ? Text(
                                                               Utils.veryLate,
-                                                              style: TextStyles
-                                                                  .alertTextStyle1,
+                                                              style: TextStyles.alertTextStyle1,
                                                             )
-                                                          : (DateTimeFormat
-                                                                          .difference()
+                                                          : (DateTimeFormat.difference()
                                                                       .inMinutes <=
                                                                   210)
                                                               ? Text(
                                                                   Utils.halfDay,
-                                                                  style: TextStyles
-                                                                      .alertTextStyle1,
+                                                                  style: TextStyles.alertTextStyle1,
                                                                 )
                                                               : Text(
                                                                   '',
-                                                                  style: TextStyles
-                                                                      .alertTextStyle1,
+                                                                  style: TextStyles.alertTextStyle1,
                                                                 )
                                               : Text(''),
                                           SizedBox(
                                             height: 20.0,
                                           ),
-                                          (model.logs.last.type ==
-                                                      Utils.CLOCKOUT ||
-                                                  model.logs.last.type ==
-                                                      Utils.TIMEOUT)
+                                          (model.logs.last.type == Utils.CLOCKOUT ||
+                                                  model.logs.last.type == Utils.TIMEOUT)
                                               ? ConfirmButton(
                                                   firstLog: true,
-                                                  pressed: model.getLastLog(
-                                                      LogType.clockIn),
+                                                  pressed: model.getLastLog(LogType.clockIn),
                                                   type: LogType.clockIn,
                                                   onPressed: () {
                                                     Navigator.of(context).pop();
@@ -713,62 +601,42 @@ class _HomeLogViewState extends State<HomeLogView> {
                                                       messageText: Center(
                                                         child: Text(
                                                           Utils.msgClockIn,
-                                                          style: TextStyles
-                                                              .notificationTextStyle1,
+                                                          style: TextStyles.notificationTextStyle1,
                                                         ),
                                                       ),
-                                                      backgroundColor: ViewColor
-                                                          .notification_green_color,
-                                                      flushbarPosition:
-                                                          FlushbarPosition.TOP,
-                                                      flushbarStyle:
-                                                          FlushbarStyle
-                                                              .FLOATING,
-                                                      duration:
-                                                          Duration(seconds: 2),
+                                                      backgroundColor:
+                                                          ViewColor.notification_green_color,
+                                                      flushbarPosition: FlushbarPosition.TOP,
+                                                      flushbarStyle: FlushbarStyle.FLOATING,
+                                                      duration: Duration(seconds: 2),
                                                     )..show(context);
                                                   },
                                                 )
                                               : Center(
                                                   child: Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    mainAxisAlignment: MainAxisAlignment.center,
                                                     children: [
                                                       BreakButton(
                                                         type: LogType.timeout,
                                                         firstLog: false,
-                                                        pressed: model
-                                                            .getLastLog(LogType
-                                                                .timeout),
+                                                        pressed: model.getLastLog(LogType.timeout),
                                                         onPressed: () {
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                          model
-                                                              .markClockTimeOut();
+                                                          Navigator.of(context).pop();
+                                                          model.markClockTimeOut();
                                                           Flushbar(
                                                             messageText: Center(
                                                               child: Text(
-                                                                Utils
-                                                                    .msgClockBreak,
+                                                                Utils.msgClockBreak,
                                                                 style: TextStyles
                                                                     .notificationTextStyle1,
                                                               ),
                                                             ),
                                                             backgroundColor:
-                                                                ViewColor
-                                                                    .notification_green_color,
-                                                            flushbarPosition:
-                                                                FlushbarPosition
-                                                                    .TOP,
-                                                            flushbarStyle:
-                                                                FlushbarStyle
-                                                                    .FLOATING,
-                                                            duration: Duration(
-                                                                seconds: 2),
+                                                                ViewColor.notification_green_color,
+                                                            flushbarPosition: FlushbarPosition.TOP,
+                                                            flushbarStyle: FlushbarStyle.FLOATING,
+                                                            duration: Duration(seconds: 2),
                                                           )..show(context);
                                                         },
                                                       ),
@@ -778,37 +646,25 @@ class _HomeLogViewState extends State<HomeLogView> {
                                                       ClockOutButton(
                                                         firstLog: false,
                                                         type: LogType.clockOut,
-                                                        pressed: model
-                                                            .getLastLog(LogType
-                                                                .clockOut),
+                                                        pressed: model.getLastLog(LogType.clockOut),
                                                         onPressed: () {
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                          model.markClockOut(
-                                                              DateTimeFormat
-                                                                  .calculateHoursForSingleDay(
-                                                                      model
-                                                                          .logList));
+                                                          Navigator.of(context).pop();
+                                                          model.markClockOut(DateTimeFormat
+                                                              .calculateHoursForSingleDay(
+                                                                  model.logList));
                                                           Flushbar(
                                                             messageText: Center(
                                                               child: Text(
-                                                                Utils
-                                                                    .msgClockOut,
+                                                                Utils.msgClockOut,
                                                                 style: TextStyles
                                                                     .notificationTextStyle1,
                                                               ),
                                                             ),
                                                             backgroundColor:
-                                                                ViewColor
-                                                                    .notification_green_color,
-                                                            flushbarPosition:
-                                                                FlushbarPosition
-                                                                    .TOP,
-                                                            flushbarStyle:
-                                                                FlushbarStyle
-                                                                    .FLOATING,
-                                                            duration: Duration(
-                                                                seconds: 2),
+                                                                ViewColor.notification_green_color,
+                                                            flushbarPosition: FlushbarPosition.TOP,
+                                                            flushbarStyle: FlushbarStyle.FLOATING,
+                                                            duration: Duration(seconds: 2),
                                                           )..show(context);
                                                         },
                                                       ),

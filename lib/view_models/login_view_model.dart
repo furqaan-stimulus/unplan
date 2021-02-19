@@ -1,65 +1,60 @@
 import 'dart:async';
-import 'dart:convert';
+import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
-import 'package:http/http.dart';
+import 'package:device_info/device_info.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:unplan/app/locator.dart';
-import 'package:unplan/app/router.gr.dart';
-import 'package:unplan/model/login.dart';
-import 'package:unplan/services/shared_pref_service.dart';
-import 'package:unplan/utils/utils.dart';
+import 'package:unplan/services/auth_service.dart';
 
 class LoginViewModel extends BaseViewModel {
-  final NavigationService _navigationService = getIt<NavigationService>();
-  final SnackbarService _snackBarService = getIt<SnackbarService>();
   final DialogService _dialogService = getIt<DialogService>();
+  final AuthService _authService = getIt<AuthService>();
+
+  // final SnackbarService _snackBarService = getIt<SnackbarService>();
   var result;
 
-  Future<Map<String, dynamic>> postLogin(String email, String password) async {
-    final Map<String, dynamic> loginData = {
-      'email': email,
-      'password': password,
-    };
-
-    Response response = await post(
-      Utils.login_url,
-      body: json.encode(loginData),
-      headers: {'Content-Type': 'application/json', 'accept': 'application/json'},
-    );
-
-    if (response.statusCode == 200) {
-      setBusy(true);
-      final Map<String, dynamic> responseData = json.decode(response.body);
-
-      var userData = responseData;
-      Login authUser = Login.fromJson(userData);
-
-      await SharedPrefService.storeString('token', authUser.token);
-      await SharedPrefService.storeString('email', authUser.userDetail.email);
-      await SharedPrefService.storeString('name', authUser.userDetail.name);
-      await SharedPrefService.storeInt('id', authUser.userDetail.id);
-
-      result = {'status': true, 'message': 'code ${response.statusCode} '};
-      _snackBarService.showSnackbar(message: 'login Successful');
-      _navigationService.pushNamedAndRemoveUntil(
-        Routes.homeView,
-      );
-      setBusy(false);
-    } else {
-      result = {'status': false, 'message': 'code ${response.statusCode} '};
-      _snackBarService.showSnackbar(message: 'login failed!! Enter correct credentials');
-    }
-    return json.decode(response.body);
+  Future postLogin(
+    String email,
+    String password,
+  ) async {
+    // final SharedPreferences preferences = await SharedPreferences.getInstance();
+    // var devOs = preferences.getString('deviceOs');
+    // var devId = preferences.getString('deviceId');
+    // DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    // if (Platform.isAndroid) {
+    //   AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+    //   if (androidInfo.id == null && androidInfo.model == null) {
+    //     print('login if');
+    //     await _authService.postLogin(email, password);
+    //     await _authService.updateDeviceInfo(androidInfo.id, androidInfo.model);
+    //   } else if (devOs == androidInfo.model && devId == androidInfo.id) {
+    //     print('login elseif');
+    //     await _authService.postLogin(email, password);
+    //   } else {
+    //     print('login else');
+    //     _snackBarService.showSnackbar(message: 'You are logging from another device');
+    //   }
+    // } else {
+    //   IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+    //   if (iosInfo.identifierForVendor == null && iosInfo.model == null) {
+    //     await _authService.postLogin(email, password);
+    //     await _authService.updateDeviceInfo(iosInfo.identifierForVendor, iosInfo.model);
+    //   } else if (devOs == iosInfo.model && devId == iosInfo.identifierForVendor) {
+    //     await _authService.postLogin(email, password);
+    //   } else {
+    //     _snackBarService.showSnackbar(message: 'You are logging from another device');
+    //   }
+    // }
+    await _authService.postLogin(email, password);
   }
 
   Future<bool> isInternet() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile) {
-      // I am connected to a mobile network, make sure there is actually a net connection.
       if (await DataConnectionChecker().hasConnection) {
-        // Mobile data detected & internet connection confirmed.
         return true;
       } else {
         _dialogService.showDialog(
@@ -70,9 +65,7 @@ class LoginViewModel extends BaseViewModel {
         return false;
       }
     } else if (connectivityResult == ConnectivityResult.wifi) {
-      // I am connected to a WIFI network, make sure there is actually a net connection.
       if (await DataConnectionChecker().hasConnection) {
-        // Wifi detected & internet connection confirmed.
         return true;
       } else {
         _dialogService.showDialog(
