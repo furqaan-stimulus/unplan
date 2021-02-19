@@ -20,6 +20,7 @@ class _HomeStatsViewState extends State<HomeStatsView> {
         model.initialise();
         model.getLeaveCount();
         model.getLogList();
+        model.getPresentCount();
       },
       builder: (context, model, child) => Scaffold(
         body: FutureBuilder(
@@ -53,17 +54,18 @@ class _HomeStatsViewState extends State<HomeStatsView> {
                             height: 10,
                           ),
                           (model.hasError)
-                              ? Text('')
+                              ? Text('error')
                               : (model.logList.length == 0)
                                   ? Text(
-                                      '0',
+                                      'no data',
                                       style: TextStyles.homeText2,
                                     )
-                                  : Text(
-                                      "${DateTimeFormat.sumOfPresent(model.logList)}",
-                                      // '0',
-                                      style: TextStyles.homeText2,
-                                    ),
+                                  : (model.logList.length != 0)
+                                      ? Text(
+                                          "${DateTimeFormat.sumOfPresent(model.logPresentList)}",
+                                          style: TextStyles.homeText2,
+                                        )
+                                      : Text('data'),
                         ],
                       ),
                       // Column(
@@ -103,7 +105,6 @@ class _HomeStatsViewState extends State<HomeStatsView> {
                                     )
                                   : Text(
                                       "${DateTimeFormat.sumOfLeaves(model.leaveList)}",
-                                      // '0',
                                       style: TextStyles.homeText2,
                                     ),
                         ],

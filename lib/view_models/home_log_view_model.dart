@@ -11,7 +11,6 @@ import 'package:unplan/model/attendance_log.dart';
 import 'package:unplan/model/today_log.dart';
 import 'package:unplan/services/attendance_service.dart';
 import 'package:unplan/model/address_detail.dart';
-import 'package:unplan/utils/date_time_format.dart';
 import 'package:unplan/utils/utils.dart';
 
 class HomeLogViewModel extends BaseViewModel {
@@ -44,9 +43,14 @@ class HomeLogViewModel extends BaseViewModel {
 
   List<AttendanceLog> get logs => _logs;
 
+  List<AttendanceLog> _totalLogs = [];
+
+  List<AttendanceLog> get totalLogs => _totalLogs;
+
   List<AddressDetail> _addressDetail = [];
 
   List<AddressDetail> get addressDetail => _addressDetail;
+
   List<TodayLog> _logList = [];
 
   List<TodayLog> get logList => _logList;
@@ -54,6 +58,7 @@ class HomeLogViewModel extends BaseViewModel {
   var result;
 
   final AttendanceService _attendanceService = getIt<AttendanceService>();
+  final DialogService _dialogService = getIt<DialogService>();
 
   Future getLogType() async {
     _attendanceService.getLogToday().listen((event) {
@@ -64,6 +69,14 @@ class HomeLogViewModel extends BaseViewModel {
       }
     });
     return _logType;
+  }
+
+  Future getLogList() async {
+    _attendanceService.getTodayLogList().listen(
+      (event) {
+        _logList = event;
+      },
+    );
   }
 
   Future<Position> determinePosition() async {
@@ -125,6 +138,12 @@ class HomeLogViewModel extends BaseViewModel {
     });
   }
 
+  Future fetchTodayLogs() async {
+    _attendanceService.getLogToday().listen((event) {
+      _totalLogs = event;
+    });
+  }
+
   Future fetchAddress() async {
     _attendanceService.getUserAddress().listen((event) {
       _addressDetail = event;
@@ -146,20 +165,31 @@ class HomeLogViewModel extends BaseViewModel {
         Utils.CLOCKIN, _currentAddress, currentPosition.latitude, currentPosition.longitude, 0, 0);
   }
 
-  markClockOut() async {
-    double totalHour = DateTimeFormat.calculateHoursForSingleDay(_logList);
+  markClockOut(totalHour) async {
     int present = 0;
-    if (totalHour.toInt() >= 4) {
-      print("if");
-      await _attendanceService.markLog(Utils.CLOCKOUT, _currentAddress, currentPosition.latitude,
-          currentPosition.longitude, present++, totalHour);
+    var sat = DateTime.saturday;
+    var currentDay = DateTime.now().weekday;
+    if (currentDay == sat) {
+      if (totalHour > 5.00) {
+        print("if1");
+        await _attendanceService.markLog(Utils.CLOCKOUT, _currentAddress, currentPosition.latitude,
+            currentPosition.longitude, present + 1, totalHour);
+      } else {
+        print("else1");
+        await _attendanceService.markLog(
+            Utils.CLOCKOUT, _currentAddress, currentPosition.latitude, currentPosition.longitude, present, 0);
+      }
     } else {
-      print("else");
-      await _attendanceService.markLog(Utils.CLOCKOUT, _currentAddress, currentPosition.latitude,
-          currentPosition.longitude, present, totalHour);
+      if (totalHour > 7.00) {
+        print("if2");
+        await _attendanceService.markLog(Utils.CLOCKOUT, _currentAddress, currentPosition.latitude,
+            currentPosition.longitude, present + 1, totalHour);
+      } else {
+        print("else2");
+        await _attendanceService.markLog(
+            Utils.CLOCKOUT, _currentAddress, currentPosition.latitude, currentPosition.longitude, present, 0);
+      }
     }
-    // await _attendanceService.markLog(Utils.CLOCKOUT, _currentAddress, currentPosition.latitude,
-    //     currentPosition.longitude, present++, totalHour);
   }
 
   markClockTimeOut() async {
@@ -167,14 +197,10 @@ class HomeLogViewModel extends BaseViewModel {
         Utils.TIMEOUT, _currentAddress, currentPosition.latitude, currentPosition.longitude, 0, 0);
   }
 
-  final DialogService _dialogService = getIt<DialogService>();
-
   Future<bool> isInternet() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile) {
-      // I am connected to a mobile network, make sure there is actually a net connection.
       if (await DataConnectionChecker().hasConnection) {
-        // Mobile data detected & internet connection confirmed.
         return true;
       } else {
         _dialogService.showDialog(
@@ -185,9 +211,7 @@ class HomeLogViewModel extends BaseViewModel {
         return false;
       }
     } else if (connectivityResult == ConnectivityResult.wifi) {
-      // I am connected to a WIFI network, make sure there is actually a net connection.
       if (await DataConnectionChecker().hasConnection) {
-        // Wifi detected & internet connection confirmed.
         return true;
       } else {
         _dialogService.showDialog(

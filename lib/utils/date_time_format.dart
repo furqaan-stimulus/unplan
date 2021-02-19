@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:unplan/model/attendance_log.dart';
 import 'package:unplan/model/leave_list_log.dart';
 import 'package:unplan/model/today_log.dart';
 
@@ -36,6 +37,7 @@ class DateTimeFormat {
     var newFormat = formatDate.format(inputDate);
     return newFormat.toString();
   }
+
   static String pickerDateFormat(String dateString) {
     var inputDate = DateTime.parse(dateString);
     var formatDate = DateFormat('dd/MM/yyyy');
@@ -51,7 +53,8 @@ class DateTimeFormat {
   }
 
   static Duration difference() {
-    DateTime notificationDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 10, 30, 00);
+    DateTime notificationDate =
+        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 10, 30, 00);
     final date2 = DateTime.now();
     final difference = date2.difference(notificationDate);
     return difference;
@@ -59,9 +62,12 @@ class DateTimeFormat {
 
   static double calculateHoursForSingleDay(List<TodayLog> logs, {String unit = 'hours'}) {
     List<Duration> pairs = createPairsFromList(logs);
-    double timeInSeconds = pairs.fold(0, (previousValue, element) {
-      return previousValue + element.inSeconds;
-    });
+    double timeInSeconds = pairs.fold(
+      0,
+      (previousValue, element) {
+        return previousValue + element.inSeconds;
+      },
+    );
     switch (unit) {
       case 'hours':
         {
@@ -97,7 +103,7 @@ class DateTimeFormat {
   }
 
   static int sumOfPresent(List<TodayLog> logs) {
-    int sum = logs.fold(0, (totalDays, leaveList) => totalDays + leaveList.getPresentDays());
+    int sum = logs.fold(0, (totalDays, total) => totalDays + total.present);
     return sum;
   }
 }

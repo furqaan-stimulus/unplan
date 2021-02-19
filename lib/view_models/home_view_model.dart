@@ -50,7 +50,6 @@ class HomeViewModel extends BaseViewModel {
   }
 
   Future getLogType() async {
-    setBusy(true);
     _attendanceService.getLogToday().listen((event) {
       _logType = event.last.type;
     });
@@ -82,7 +81,6 @@ class HomeViewModel extends BaseViewModel {
   }
 
   Future getCurrentLocation() async {
-    setBusy(true);
     Geolocator.getPositionStream(
       desiredAccuracy: LocationAccuracy.high,
       distanceFilter: 10,
@@ -92,7 +90,6 @@ class HomeViewModel extends BaseViewModel {
       getAddressFromLatLng();
       notifyListeners();
     });
-    setBusy(false);
   }
 
   Future getAddressFromLatLng() async {
@@ -102,7 +99,6 @@ class HomeViewModel extends BaseViewModel {
           double.parse((currentPosition.longitude).toStringAsFixed(2)));
       Placemark place = p[0];
       _currentAddress = "${place.subLocality}, ${place.locality}";
-      notifyListeners();
     } catch (e) {
       print(e);
     }

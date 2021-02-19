@@ -59,21 +59,27 @@ class _HomeDataViewState extends State<HomeDataView> {
                   SizedBox(
                     height: 20.0,
                   ),
-                  Center(
-                    child: (model.logs.length == 0)
-                        ? Text('')
-                        : RichText(
-                            text: TextSpan(
-                              children: <TextSpan>[
-                                TextSpan(text: Utils.hourToday, style: TextStyles.homeText1),
-                                TextSpan(
-                                    // text: "00:00",
-                                    text: "${DateTimeFormat.calculateHoursForSingleDay(model.logList)}",
-                                    style: TextStyles.homeText1),
-                                TextSpan(text: Utils.Hrs, style: TextStyles.homeText1),
-                              ],
-                            ),
-                          ),
+                  FutureBuilder(
+                    builder: (context, snapshot) {
+                      return Center(
+                        child: (model.logs.length == 0)
+                            ? Text('')
+                            : (model.logs.length != 0)
+                                ? RichText(
+                                    text: TextSpan(
+                                      children: <TextSpan>[
+                                        TextSpan(text: Utils.hourToday, style: TextStyles.homeText1),
+                                        TextSpan(
+                                            text:
+                                                "${DateTimeFormat.calculateHoursForSingleDay(model.logList)}",
+                                            style: TextStyles.homeText1),
+                                        TextSpan(text: Utils.Hrs, style: TextStyles.homeText1),
+                                      ],
+                                    ),
+                                  )
+                                : Text(''),
+                      );
+                    },
                   ),
                   SizedBox(
                     height: 10.0,

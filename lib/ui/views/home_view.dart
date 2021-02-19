@@ -30,6 +30,8 @@ class _HomeViewState extends State<HomeView> {
         model.initializeNotification();
         model.determinePosition();
         model.isInternet();
+        model.getAddressFromLatLng();
+        model.getCurrentLocation();
       },
       builder: (context, model, child) {
         return Scaffold(
@@ -66,7 +68,8 @@ class _HomeViewState extends State<HomeView> {
                               children: <TextSpan>[
                                 TextSpan(text: Utils.HI, style: TextStyles.homeTitle),
                                 snapshot.hasData
-                                    ? TextSpan(text: '${snapshot.data}', style: TextStyles.homeTitle)
+                                    ? TextSpan(
+                                        text: '${snapshot.data}', style: TextStyles.homeTitle)
                                     : TextSpan(text: ''),
                                 TextSpan(text: Utils.COMMA, style: TextStyles.homeTitle),
                               ],

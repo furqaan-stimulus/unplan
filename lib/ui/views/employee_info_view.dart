@@ -18,7 +18,7 @@ class _EmployeeInfoViewState extends State<EmployeeInfoView> {
   Widget build(BuildContext context) {
     return ViewModelBuilder<EmployeeInfoViewModel>.reactive(
       viewModelBuilder: () => EmployeeInfoViewModel(),
-      onModelReady: (model){
+      onModelReady: (model) {
         model.isInternet();
       },
       builder: (context, model, child) {

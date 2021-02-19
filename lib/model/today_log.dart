@@ -74,4 +74,8 @@ class TodayLog {
   int getPresentDays() {
     return this.present;
   }
+
+  int getOnlyMonth() {
+    return DateTime.parse(this.date.toString()).month;
+  }
 }

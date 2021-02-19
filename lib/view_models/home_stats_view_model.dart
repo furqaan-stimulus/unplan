@@ -3,6 +3,7 @@ import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:unplan/app/locator.dart';
+import 'package:unplan/model/attendance_log.dart';
 import 'package:unplan/model/employee_information.dart';
 import 'package:unplan/model/leave_list_log.dart';
 import 'package:unplan/model/today_log.dart';
@@ -10,6 +11,8 @@ import 'package:unplan/services/attendance_service.dart';
 
 class HomeStatsViewModel extends BaseViewModel {
   final AttendanceService _attendanceService = getIt<AttendanceService>();
+  final DialogService _dialogService = getIt<DialogService>();
+
   List<EmployeeInformation> _getEmpInfo = [];
 
   List<EmployeeInformation> get getEmpInfo => _getEmpInfo;
@@ -21,6 +24,10 @@ class HomeStatsViewModel extends BaseViewModel {
   List<TodayLog> _logList = [];
 
   List<TodayLog> get logList => _logList;
+
+  List<TodayLog> _logPresentList = [];
+
+  List<TodayLog> get logPresentList => _logPresentList;
 
   Future initialise() async {
     _attendanceService.getEmployeeInfo().listen((event) {
@@ -34,15 +41,17 @@ class HomeStatsViewModel extends BaseViewModel {
     });
   }
 
-  Future getLogList() async {
-    setBusy(true);
-    _attendanceService.getTodayLogList().listen((event) {
-      _logList = event;
-      setBusy(false);
+  Future getPresentCount() async {
+    _attendanceService.getPresentLog().listen((event) {
+      _logPresentList = event;
     });
   }
 
-  final DialogService _dialogService = getIt<DialogService>();
+  Future getLogList() async {
+    _attendanceService.getTodayLogList().listen((event) {
+      _logList = event;
+    });
+  }
 
   Future<bool> isInternet() async {
     var connectivityResult = await (Connectivity().checkConnectivity());

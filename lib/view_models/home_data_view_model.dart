@@ -18,25 +18,26 @@ class HomeDataViewModel extends BaseViewModel {
 
   List<TodayLog> get logList => _logList;
 
-  Future initialise() async{
+  Future initialise() async {
     _attendanceService.getLogToday().listen((event) {
       _logs = event;
     });
   }
 
-  Future getLogList() async{
-    _attendanceService.getTodayLogList().listen((event) {
-      _logList = event;
-    });
+  Future getLogList() async {
+    _attendanceService.getTodayLogList().listen(
+      (event) {
+        _logList = event;
+      },
+    );
   }
+
   final DialogService _dialogService = getIt<DialogService>();
 
   Future<bool> isInternet() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile) {
-      // I am connected to a mobile network, make sure there is actually a net connection.
       if (await DataConnectionChecker().hasConnection) {
-        // Mobile data detected & internet connection confirmed.
         return true;
       } else {
         _dialogService.showDialog(
@@ -47,9 +48,7 @@ class HomeDataViewModel extends BaseViewModel {
         return false;
       }
     } else if (connectivityResult == ConnectivityResult.wifi) {
-      // I am connected to a WIFI network, make sure there is actually a net connection.
       if (await DataConnectionChecker().hasConnection) {
-        // Wifi detected & internet connection confirmed.
         return true;
       } else {
         _dialogService.showDialog(

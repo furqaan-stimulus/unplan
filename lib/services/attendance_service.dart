@@ -20,6 +20,10 @@ class AttendanceService {
 
   List<TodayLog> get logList => _logList;
 
+  List<TodayLog> _presentList;
+
+  List<TodayLog> get presentList => _presentList;
+
   List<LeaveListLog> _leaveList = [];
 
   List<LeaveListLog> get leaveList => _leaveList;
@@ -41,17 +45,23 @@ class AttendanceService {
 
   Stream<List<EmployeeInformation>> get getEmpInfoStrm => _getEmpInfoStrmCntl.stream;
 
-  StreamController<List<AttendanceLog>> _logforToday = StreamController<List<AttendanceLog>>.broadcast();
+  StreamController<List<AttendanceLog>> _logforToday =
+      StreamController<List<AttendanceLog>>.broadcast();
 
   Stream<List<AttendanceLog>> get logForToday => _logforToday.stream;
 
-  StreamController<List<LeaveListLog>> _leaveListCntl = StreamController<List<LeaveListLog>>.broadcast();
+  StreamController<List<LeaveListLog>> _leaveListCntl =
+      StreamController<List<LeaveListLog>>.broadcast();
 
   Stream<List<LeaveListLog>> get leaveListStream => _leaveListCntl.stream;
 
   StreamController<List<TodayLog>> _logListToday = StreamController<List<TodayLog>>.broadcast();
 
   Stream<List<TodayLog>> get logListToday => _logListToday.stream;
+
+  StreamController<List<TodayLog>> _logPresentMonth = StreamController<List<TodayLog>>.broadcast();
+
+  Stream<List<TodayLog>> get logPresentMonth => _logPresentMonth.stream;
 
   StreamController<List<AddressDetail>> _addressStreamControl =
       StreamController<List<AddressDetail>>.broadcast();
@@ -63,8 +73,8 @@ class AttendanceService {
 
   Stream<List<PersonalInformation>> get userDataStream => _userDataStrCntl.stream;
 
-  Future<Map<String, dynamic>> markLog(String type, String currentAddress, double latitude, double longitude,
-      int present, double totalHours) async {
+  Future<Map<String, dynamic>> markLog(String type, String currentAddress, double latitude,
+      double longitude, int present, double totalHours) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     int empId = preferences.getInt('id');
     DateTime now = DateTime.now();
@@ -79,6 +89,7 @@ class AttendanceService {
       'currunt_long': longitude,
       'present': present,
       'total_hour': totalHours,
+      'avg_hour': 0,
     };
 
     var result;
@@ -337,5 +348,38 @@ class AttendanceService {
       }
     });
     return _getEmpInfoStrmCntl.stream;
+  }
+
+  Stream<List<TodayLog>> getPresentLog() {
+    Future.delayed(
+      const Duration(microseconds: 250),
+      () async {
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+        String authToken = preferences.getString('token');
+        int empId = preferences.getInt('id');
+        Response response;
+        DateTime now = DateTime.now();
+
+        var queryParameters = {
+          'date': DateTime(now.year, now.month, 15).toString(),
+        };
+
+        var uri = Uri.https('dev.stimulusco.com', '/api/attendenceByDate/$empId', queryParameters);
+        if (authToken != null)
+          response = await get(
+            uri,
+            headers: {'Authorization': 'Bearer $authToken'},
+          );
+        if (response != null) {
+          _presentList = (json.decode(response.body)['Attendence Data'] as List)
+              .map((e) => TodayLog.fromJson(e))
+              .toList();
+          _logPresentMonth.sink.add(_presentList);
+        } else {
+          _logPresentMonth.sink.add([]);
+        }
+      },
+    );
+    return _logPresentMonth.stream;
   }
 }
