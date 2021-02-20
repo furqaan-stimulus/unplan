@@ -21,6 +21,7 @@ class _HomeStatsViewState extends State<HomeStatsView> {
         model.getLeaveCount();
         model.getLogList();
         model.getPresentCount();
+        model.getLeaveMonthCount();
       },
       builder: (context, model, child) => Scaffold(
         body: FutureBuilder(
@@ -54,18 +55,18 @@ class _HomeStatsViewState extends State<HomeStatsView> {
                             height: 10,
                           ),
                           (model.hasError)
-                              ? Text('error')
-                              : (model.logList.length == 0)
+                              ? Text('')
+                              : (model.logPresentList.length == 0)
                                   ? Text(
-                                      'no data',
+                                      '0',
                                       style: TextStyles.homeText2,
                                     )
-                                  : (model.logList.length != 0)
+                                  : (model.logPresentList.length != 0)
                                       ? Text(
-                                          "${DateTimeFormat.sumOfPresent(model.logPresentList)}",
+                                          "${DateTimeFormat.sumOfPresentOfMonth(model.logPresentList)}",
                                           style: TextStyles.homeText2,
                                         )
-                                      : Text('data'),
+                                      : Text('0'),
                         ],
                       ),
                       // Column(
@@ -98,13 +99,13 @@ class _HomeStatsViewState extends State<HomeStatsView> {
                           ),
                           (model.hasError)
                               ? Text('')
-                              : (model.leaveList.length == 0)
+                              : (model.leaveMonthList.length == 0)
                                   ? Text(
                                       '0',
                                       style: TextStyles.homeText2,
                                     )
                                   : Text(
-                                      "${DateTimeFormat.sumOfLeaves(model.leaveList)}",
+                                      "${DateTimeFormat.sumOfLeavesOfMonth(model.leaveMonthList)}",
                                       style: TextStyles.homeText2,
                                     ),
                         ],

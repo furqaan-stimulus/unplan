@@ -12,6 +12,8 @@ class LeaveListLog {
     this.reasonOfLeave,
     this.status,
     this.totalDays,
+    this.createdAt,
+    this.updatedAt,
   });
 
   int id;
@@ -26,6 +28,8 @@ class LeaveListLog {
   String reasonOfLeave;
   String status;
   int totalDays;
+  DateTime createdAt;
+  DateTime updatedAt;
 
   factory LeaveListLog.fromJson(Map<String, dynamic> json) => LeaveListLog(
         id: json["id"],
@@ -40,6 +44,8 @@ class LeaveListLog {
         reasonOfLeave: json["reason_of_leave"],
         status: json["status"],
         totalDays: json["total_days"],
+        createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
+        updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -55,6 +61,8 @@ class LeaveListLog {
         "reason_of_leave": reasonOfLeave,
         "status": status,
         "total_days": totalDays,
+        "created_at": createdAt.toIso8601String(),
+        "updated_at": updatedAt.toIso8601String(),
       };
 
   int getTotalLeaveDays() {

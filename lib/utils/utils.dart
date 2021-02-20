@@ -63,6 +63,9 @@ class Utils {
   static const GET_LEAVE_INFO = 'emp_leave_info/';
   static const GET_EMPLOYEE_INFO = 'teamleaveinfo/';
   static const UPDATE_EMPLOYEE_INFO = 'teamleave/';
+  static const GET_ATTENDANCE_BY_MONTH = 'attendenceByMonth/';
+  static const GET_LEAVE_BY_MONTH = 'leaveByMonth/';
+  static const GET_LEAVE_BY_YEAR = 'leaveByYear/';
   static const base_url = 'https://dev.stimulusco.com/api/';
   static const login_url = base_url + LOGIN;
   static const attendance_url = base_url + ADD_ATTENDANCE;
@@ -74,4 +77,7 @@ class Utils {
   static const get_leave_url = base_url + GET_LEAVE_INFO;
   static const get_employee_info_url = base_url + GET_EMPLOYEE_INFO;
   static const update_employee_info_url = base_url + UPDATE_EMPLOYEE_INFO;
+  static const get_attendance_by_month_url = base_url + GET_ATTENDANCE_BY_MONTH;
+  static const get_leave_by_month_url = base_url + GET_LEAVE_BY_MONTH;
+  static const get_leave_by_year_url = base_url + GET_LEAVE_BY_YEAR;
 }

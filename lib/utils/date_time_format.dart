@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
-import 'package:unplan/model/attendance_log.dart';
 import 'package:unplan/model/leave_list_log.dart';
+import 'package:unplan/model/present_by_month.dart';
 import 'package:unplan/model/today_log.dart';
 
 class DateTimeFormat {
@@ -53,8 +53,7 @@ class DateTimeFormat {
   }
 
   static Duration difference() {
-    DateTime notificationDate =
-        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 10, 30, 00);
+    DateTime notificationDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 10, 30, 00);
     final date2 = DateTime.now();
     final difference = date2.difference(notificationDate);
     return difference;
@@ -97,13 +96,13 @@ class DateTimeFormat {
     }).toList();
   }
 
-  static int sumOfLeaves(List<LeaveListLog> logs) {
-    int sum = logs.fold(0, (totalDays, leaveList) => totalDays + leaveList.totalDays);
+  static int sumOfLeavesOfMonth(List<LeaveListLog> logs) {
+    int sum = logs.fold(0, (totalDays, leaveList) => totalDays + leaveList.getTotalLeaveDays());
     return sum;
   }
 
-  static int sumOfPresent(List<TodayLog> logs) {
-    int sum = logs.fold(0, (totalDays, total) => totalDays + total.present);
+  static int sumOfPresentOfMonth(List<PresentByMonth> logs) {
+    int sum = logs.fold(0, (totalDays, presentDays) => totalDays + presentDays.present);
     return sum;
   }
 }

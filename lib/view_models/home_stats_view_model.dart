@@ -5,6 +5,7 @@ import 'package:stacked_services/stacked_services.dart';
 import 'package:unplan/app/locator.dart';
 import 'package:unplan/model/employee_information.dart';
 import 'package:unplan/model/leave_list_log.dart';
+import 'package:unplan/model/present_by_month.dart';
 import 'package:unplan/model/today_log.dart';
 import 'package:unplan/services/attendance_service.dart';
 
@@ -20,13 +21,17 @@ class HomeStatsViewModel extends BaseViewModel {
 
   List<LeaveListLog> get leaveList => _leaveList;
 
+  List<LeaveListLog> _leaveMonthList = [];
+
+  List<LeaveListLog> get leaveMonthList => _leaveMonthList;
+
   List<TodayLog> _logList = [];
 
   List<TodayLog> get logList => _logList;
 
-  List<TodayLog> _logPresentList = [];
+  List<PresentByMonth> _logPresentList = [];
 
-  List<TodayLog> get logPresentList => _logPresentList;
+  List<PresentByMonth> get logPresentList => _logPresentList;
 
   Future initialise() async {
     _attendanceService.getEmployeeInfo().listen((event) {
@@ -37,6 +42,12 @@ class HomeStatsViewModel extends BaseViewModel {
   Future getLeaveCount() async {
     _attendanceService.getLeavesList().listen((event) {
       _leaveList = event;
+    });
+  }
+
+  Future getLeaveMonthCount() async {
+    _attendanceService.getMonthlyLeaveLog().listen((event) {
+      _leaveMonthList = event;
     });
   }
 
