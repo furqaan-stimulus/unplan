@@ -179,22 +179,18 @@ class HomeLogViewModel extends BaseViewModel {
     var sat = DateTime.saturday;
     var currentDay = DateTime.now().weekday;
     if (currentDay == sat) {
-      if (totalHour > 5) {
-        print("if1");
+      if (totalHour >= 5.00) {
         await _attendanceService.markLog(Utils.CLOCKOUT, _currentAddress, currentPosition.latitude,
             currentPosition.longitude, present + 1, totalHour);
       } else {
-        print("else1");
         await _attendanceService.markLog(Utils.CLOCKOUT, _currentAddress, currentPosition.latitude,
             currentPosition.longitude, present, 0);
       }
     } else {
-      if (totalHour > 7) {
-        print("if2");
+      if (totalHour >= 6.00) {
         await _attendanceService.markLog(Utils.CLOCKOUT, _currentAddress, currentPosition.latitude,
             currentPosition.longitude, present + 1, totalHour);
       } else {
-        print("else2");
         await _attendanceService.markLog(Utils.CLOCKOUT, _currentAddress, currentPosition.latitude,
             currentPosition.longitude, present, 0);
       }

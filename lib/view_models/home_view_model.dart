@@ -70,8 +70,7 @@ class HomeViewModel extends BaseViewModel {
 
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permantly denied, we cannot request permissions.');
+      return Future.error('Location permissions are permantly denied, we cannot request permissions.');
     }
 
     if (permission == LocationPermission.denied) {
@@ -97,8 +96,7 @@ class HomeViewModel extends BaseViewModel {
 
   Future getAddressFromLatLng() async {
     try {
-      List<Placemark> p = await placemarkFromCoordinates(
-          double.parse((currentPosition.latitude).toStringAsFixed(2)),
+      List<Placemark> p = await placemarkFromCoordinates(double.parse((currentPosition.latitude).toStringAsFixed(2)),
           double.parse((currentPosition.longitude).toStringAsFixed(2)));
       Placemark place = p[0];
       _currentAddress = "${place.subLocality}, ${place.locality}";
@@ -108,19 +106,18 @@ class HomeViewModel extends BaseViewModel {
   }
 
   Future initializeNotification() async {
-    DateTime notificationDate =
-        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 19, 25, 00);
-    DateTime notificationDate1 =
-        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 21, 30, 00);
-    DateTime notificationDate2 =
-        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 23, 30, 00);
+    DateTime notificationDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 19, 25, 00);
+    DateTime notificationDate1 = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 21, 30, 00);
+    DateTime notificationDate2 = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 23, 30, 00);
+    DateTime notificationDate3 = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 16, 25, 00);
+    var sat = DateTime.saturday;
+    var currentDay = DateTime.now().weekday;
 
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-        'unplan_channel_id', 'Unplan', 'Unplan',
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails('unplan_channel_id', 'Unplan', 'Unplan',
         priority: Priority.high, importance: Importance.max);
     var iOSPlatformChannelSpecifics = IOSNotificationDetails();
-    NotificationDetails platformChannelSpecifics = NotificationDetails(
-        android: androidPlatformChannelSpecifics, iOS: iOSPlatformChannelSpecifics);
+    NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics, iOS: iOSPlatformChannelSpecifics);
 
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String authToken = preferences.getString('token');
@@ -132,42 +129,44 @@ class HomeViewModel extends BaseViewModel {
         headers: {'Authorization': 'Bearer $authToken'},
       );
     if (response != null) {
-      _logs = (json.decode(response.body)['Employee Detail'] as List)
-          .map((e) => AttendanceLog.fromJson(e))
-          .toList();
+      _logs = (json.decode(response.body)['Employee Detail'] as List).map((e) => AttendanceLog.fromJson(e)).toList();
     }
 
     if (_logs.length != 0) {
-      if (_logs.last.type == Utils.CLOCKIN) {
-        await MyApp.notifications.zonedSchedule(
-            0,
-            'Sign Off!',
-            "Did you finish your day?",
-            tz.TZDateTime.from(notificationDate, tz.local).add(const Duration(seconds: 5)),
-            platformChannelSpecifics,
-            androidAllowWhileIdle: true,
-            uiLocalNotificationDateInterpretation:
-                UILocalNotificationDateInterpretation.absoluteTime);
-
-        await MyApp.notifications.zonedSchedule(
-            1,
-            'Alert!!',
-            "Did you forget to logout?",
-            tz.TZDateTime.from(notificationDate1, tz.local).add(const Duration(seconds: 5)),
-            platformChannelSpecifics,
-            androidAllowWhileIdle: true,
-            uiLocalNotificationDateInterpretation:
-                UILocalNotificationDateInterpretation.absoluteTime);
-
-        await MyApp.notifications.zonedSchedule(
-            2,
-            'Alert!!',
-            "You will be clocked-out in 29 minutes.",
-            tz.TZDateTime.from(notificationDate2, tz.local).add(const Duration(seconds: 5)),
-            platformChannelSpecifics,
-            androidAllowWhileIdle: true,
-            uiLocalNotificationDateInterpretation:
-                UILocalNotificationDateInterpretation.absoluteTime);
+      if (currentDay == sat) {
+        if (_logs.last.type == Utils.CLOCKIN) {
+          await MyApp.notifications.zonedSchedule(0, 'Sign Off!', "Did you finish your day?",
+              tz.TZDateTime.from(notificationDate3, tz.local).add(const Duration(seconds: 5)), platformChannelSpecifics,
+              androidAllowWhileIdle: true,
+              uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime);
+          await MyApp.notifications.zonedSchedule(0, 'Alert!', "Did you finish your day?",
+              tz.TZDateTime.from(notificationDate, tz.local).add(const Duration(seconds: 5)), platformChannelSpecifics,
+              androidAllowWhileIdle: true,
+              uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime);
+          await MyApp.notifications.zonedSchedule(1, 'Alert!!', "Did you forget to logout?",
+              tz.TZDateTime.from(notificationDate1, tz.local).add(const Duration(seconds: 5)), platformChannelSpecifics,
+              androidAllowWhileIdle: true,
+              uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime);
+          await MyApp.notifications.zonedSchedule(2, 'Alert!!', "You will be clocked-out in 29 minutes.",
+              tz.TZDateTime.from(notificationDate2, tz.local).add(const Duration(seconds: 5)), platformChannelSpecifics,
+              androidAllowWhileIdle: true,
+              uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime);
+        }
+      } else {
+        if (_logs.last.type == Utils.CLOCKIN) {
+          await MyApp.notifications.zonedSchedule(0, 'Sign Off!', "Did you finish your day?",
+              tz.TZDateTime.from(notificationDate, tz.local).add(const Duration(seconds: 5)), platformChannelSpecifics,
+              androidAllowWhileIdle: true,
+              uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime);
+          await MyApp.notifications.zonedSchedule(1, 'Alert!!', "Did you forget to logout?",
+              tz.TZDateTime.from(notificationDate1, tz.local).add(const Duration(seconds: 5)), platformChannelSpecifics,
+              androidAllowWhileIdle: true,
+              uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime);
+          await MyApp.notifications.zonedSchedule(2, 'Alert!!', "You will be clocked-out in 29 minutes.",
+              tz.TZDateTime.from(notificationDate2, tz.local).add(const Duration(seconds: 5)), platformChannelSpecifics,
+              androidAllowWhileIdle: true,
+              uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime);
+        }
       }
     }
   }
@@ -213,21 +212,21 @@ class HomeViewModel extends BaseViewModel {
   }
 
   // Future updateLeaveByMonth() async {
-  //   int paidLeave = 0;
-  //   double sickLeave = 0;
-  //   var now = DateTime.now();
-  //   var currentDate = DateTime(now.year, now.month, 1);
-  //   int joinYr, joinMonth, joinDay;
-  //   var probDuration = _infoList.first.probetion;
-  //   String joinDate = "${_infoList.first.joiningDate}";
-  //   DateTime nDate = DateTime.parse(joinDate);
-  //   joinYr = nDate.year;
-  //   joinMonth = nDate.month;
-  //   joinDay = nDate.day;
-  //   var lastProbationDay = DateTime(joinYr, joinMonth + probDuration, joinDay - 1);
-  //
-  //   if (currentDate.isAfter(lastProbationDay)) {
-  //     _attendanceService.updateLeavesCountByMonth(paidLeave + 1, sickLeave + 0.5);
-  //   }
-  // }
+//   int paidLeave = 0;
+//   double sickLeave = 0;
+//   var now = DateTime.now();
+//   var currentDate = DateTime(now.year, now.month, 1);
+//   int joinYr, joinMonth, joinDay;
+//   var probDuration = _infoList.first.probetion;
+//   String joinDate = "${_infoList.first.joiningDate}";
+//   DateTime nDate = DateTime.parse(joinDate);
+//   joinYr = nDate.year;
+//   joinMonth = nDate.month;
+//   joinDay = nDate.day;
+//   var lastProbationDay = DateTime(joinYr, joinMonth + probDuration, joinDay - 1);
+//
+//   if (currentDate.isAfter(lastProbationDay)) {
+//     _attendanceService.updateLeavesCountByMonth(paidLeave + 1, sickLeave + 0.5);
+//   }
+// }
 }

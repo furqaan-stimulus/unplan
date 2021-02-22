@@ -443,8 +443,7 @@ class _LeaveFormViewState extends State<LeaveFormView> {
                                     joinYr = nDate.year;
                                     joinMonth = nDate.month;
                                     joinDay = nDate.day;
-                                    lastProbationDay =
-                                        DateTime(joinYr, joinMonth + probDuration, joinDay - 1);
+                                    lastProbationDay = DateTime(joinYr, joinMonth + probDuration, joinDay - 1);
                                     if (selectStartDate.isAfter(model.getEmpInfo.first.joiningDate) &&
                                             selectStartDate.isBefore(lastProbationDay) ||
                                         selectEndDate.isBefore(lastProbationDay) &&
@@ -482,8 +481,7 @@ class _LeaveFormViewState extends State<LeaveFormView> {
                                               });
                                             });
                                           } else {
-                                            if (model.getEmpInfo.first.paidLeave == 0 &&
-                                                _currentType == "Paid Leave") {
+                                            if (model.getEmpInfo.first.paidLeave == 0 && _currentType == "Paid Leave") {
                                               typeErrorMessage = true;
                                               Future.delayed(const Duration(seconds: 2), () {
                                                 setState(() {
@@ -617,10 +615,8 @@ class _LeaveFormViewState extends State<LeaveFormView> {
                                         if (_formKey.currentState.validate()) {
                                           FocusManager.instance.primaryFocus.unfocus();
                                           int pl = 0, sl = 0, ul = 0, remainPaid, remainSick;
-                                          if (model.getEmpInfo.first.paidLeave == 0 &&
-                                                  _currentType == "Paid Leave" ||
-                                              model.getEmpInfo.first.sickLeave == 0 &&
-                                                  _currentType == "Sick Leave" ||
+                                          if (model.getEmpInfo.first.paidLeave == 0 && _currentType == "Paid Leave" ||
+                                              model.getEmpInfo.first.sickLeave == 0 && _currentType == "Sick Leave" ||
                                               _currentType == "Unpaid Leave") {
                                             pl = remainPaid = 0;
                                             sl = remainSick = 0;
@@ -671,8 +667,8 @@ class _LeaveFormViewState extends State<LeaveFormView> {
                                             ul = totalDays - model.getEmpInfo.first.paidLeave;
                                             sl = 0;
                                             remainSick = model.getEmpInfo.first.sickLeave;
-                                            remainPaid = model.getEmpInfo.first.paidLeave -
-                                                model.getEmpInfo.first.paidLeave;
+                                            remainPaid =
+                                                model.getEmpInfo.first.paidLeave - model.getEmpInfo.first.paidLeave;
                                             print(
                                                 "6: pl: $pl | sl: $sl | ul: $ul | remainPaid: $remainPaid | remainSick: $remainSick");
                                           } else if (model.getEmpInfo.first.sickLeave < totalDays &&
@@ -681,8 +677,8 @@ class _LeaveFormViewState extends State<LeaveFormView> {
                                             sl = model.getEmpInfo.first.sickLeave;
                                             ul = totalDays - model.getEmpInfo.first.sickLeave;
                                             remainPaid = model.getEmpInfo.first.paidLeave;
-                                            remainSick = model.getEmpInfo.first.sickLeave -
-                                                model.getEmpInfo.first.sickLeave;
+                                            remainSick =
+                                                model.getEmpInfo.first.sickLeave - model.getEmpInfo.first.sickLeave;
                                             print(
                                                 "7: pl: $pl | sl: $sl | ul: $ul | remainPaid: $remainPaid | remainSick: $remainSick");
                                           }

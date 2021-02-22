@@ -10,9 +10,22 @@ import 'package:unplan/model/leave_list_log.dart';
 import 'package:unplan/services/attendance_service.dart';
 
 class LeaveListViewModel extends BaseViewModel {
+  final DialogService _dialogService = getIt<DialogService>();
+  final NavigationService _navigationService = getIt<NavigationService>();
+  final AttendanceService _attendanceService = getIt<AttendanceService>();
+
   String _name;
+  List<LeaveListLog> _leaveList = [];
+  List<LeaveListLog> _yearlyLeaveList = [];
+  List<EmployeeInformation> _getEmpInfo = [];
 
   String get name => _name;
+
+  List<LeaveListLog> get leaveList => _leaveList;
+
+  List<LeaveListLog> get yearlyLeaveList => _yearlyLeaveList;
+
+  List<EmployeeInformation> get getEmpInfo => _getEmpInfo;
 
   Future getName() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -21,24 +34,19 @@ class LeaveListViewModel extends BaseViewModel {
     return _name;
   }
 
-  final NavigationService _navigationService = getIt<NavigationService>();
-
   Future navigateTOHomeView() async {
     await _navigationService.pushNamedAndRemoveUntil(Routes.homeView);
   }
 
-  final AttendanceService _attendanceService = getIt<AttendanceService>();
-  List<LeaveListLog> _leaveList = [];
-
-  List<LeaveListLog> get leaveList => _leaveList;
-
-  List<EmployeeInformation> _getEmpInfo = [];
-
-  List<EmployeeInformation> get getEmpInfo => _getEmpInfo;
-
   Future initialise() async {
     _attendanceService.getLeavesList().listen((event) {
       _leaveList = event;
+    });
+  }
+
+  Future getYearlyLeave() async {
+    _attendanceService.getYearlyLeaveLog().listen((event) {
+      _yearlyLeaveList = event;
     });
   }
 
@@ -47,14 +55,11 @@ class LeaveListViewModel extends BaseViewModel {
       _getEmpInfo = event;
     });
   }
-  final DialogService _dialogService = getIt<DialogService>();
 
   Future<bool> isInternet() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile) {
-      // I am connected to a mobile network, make sure there is actually a net connection.
       if (await DataConnectionChecker().hasConnection) {
-        // Mobile data detected & internet connection confirmed.
         return true;
       } else {
         _dialogService.showDialog(
@@ -65,9 +70,7 @@ class LeaveListViewModel extends BaseViewModel {
         return false;
       }
     } else if (connectivityResult == ConnectivityResult.wifi) {
-      // I am connected to a WIFI network, make sure there is actually a net connection.
       if (await DataConnectionChecker().hasConnection) {
-        // Wifi detected & internet connection confirmed.
         return true;
       } else {
         _dialogService.showDialog(

@@ -394,7 +394,6 @@ class AttendanceService {
         };
 
         var uri = Uri.https('dev.stimulusco.com', '/api/attendenceByMonth/$empId', queryParameters);
-        print('uri: $uri');
         if (authToken != null)
           response = await get(
             uri,
@@ -435,6 +434,7 @@ class AttendanceService {
               .map((e) => LeaveListLog.fromJson(e))
               .toList();
           _logLeaveYear.sink.add(_leaveYearList);
+          print('year: $_leaveYearList');
         } else {
           _logLeaveYear.sink.add([]);
         }

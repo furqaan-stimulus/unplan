@@ -258,15 +258,12 @@ class _HomeLogViewState extends State<HomeLogView> {
                                                           Utils.late,
                                                           style: TextStyles.alertTextStyle,
                                                         )
-                                                      : (DateTimeFormat.difference().inMinutes <=
-                                                              60)
+                                                      : (DateTimeFormat.difference().inMinutes <= 60)
                                                           ? Text(
                                                               Utils.veryLate,
                                                               style: TextStyles.alertTextStyle1,
                                                             )
-                                                          : (DateTimeFormat.difference()
-                                                                      .inMinutes <=
-                                                                  210)
+                                                          : (DateTimeFormat.difference().inMinutes <= 210)
                                                               ? Text(
                                                                   Utils.halfDay,
                                                                   style: TextStyles.alertTextStyle1,
@@ -295,8 +292,7 @@ class _HomeLogViewState extends State<HomeLogView> {
                                                           style: TextStyles.notificationTextStyle1,
                                                         ),
                                                       ),
-                                                      backgroundColor:
-                                                          ViewColor.notification_green_color,
+                                                      backgroundColor: ViewColor.notification_green_color,
                                                       flushbarPosition: FlushbarPosition.TOP,
                                                       flushbarStyle: FlushbarStyle.FLOATING,
                                                       duration: Duration(seconds: 2),
@@ -319,12 +315,10 @@ class _HomeLogViewState extends State<HomeLogView> {
                                                             messageText: Center(
                                                               child: Text(
                                                                 Utils.msgClockBreak,
-                                                                style: TextStyles
-                                                                    .notificationTextStyle1,
+                                                                style: TextStyles.notificationTextStyle1,
                                                               ),
                                                             ),
-                                                            backgroundColor:
-                                                                ViewColor.notification_green_color,
+                                                            backgroundColor: ViewColor.notification_green_color,
                                                             flushbarPosition: FlushbarPosition.TOP,
                                                             flushbarStyle: FlushbarStyle.FLOATING,
                                                             duration: Duration(seconds: 2),
@@ -341,19 +335,16 @@ class _HomeLogViewState extends State<HomeLogView> {
                                                         onPressed: () {
                                                           Navigator.of(context).pop();
 
-                                                          model.markClockOut(DateTimeFormat
-                                                              .calculateHoursForSingleDay(
-                                                                  model.logList));
+                                                          model.markClockOut(
+                                                              DateTimeFormat.calculateHoursForSingleDay(model.logList));
                                                           Flushbar(
                                                             messageText: Center(
                                                               child: Text(
                                                                 Utils.msgClockOut,
-                                                                style: TextStyles
-                                                                    .notificationTextStyle1,
+                                                                style: TextStyles.notificationTextStyle1,
                                                               ),
                                                             ),
-                                                            backgroundColor:
-                                                                ViewColor.notification_green_color,
+                                                            backgroundColor: ViewColor.notification_green_color,
                                                             flushbarPosition: FlushbarPosition.TOP,
                                                             flushbarStyle: FlushbarStyle.FLOATING,
                                                             duration: Duration(seconds: 2),
@@ -499,8 +490,7 @@ class _HomeLogViewState extends State<HomeLogView> {
                                           SizedBox(
                                             height: 5.0,
                                           ),
-                                          (model.logType == Utils.CLOCKOUT ||
-                                                  model.logType == Utils.CLOCKOUT)
+                                          (model.logType == Utils.CLOCKOUT || model.logType == Utils.CLOCKOUT)
                                               ? (model.currentPosition != null)
                                                   ? (officeDist <= 10.0)
                                                       ? Text(
@@ -567,15 +557,12 @@ class _HomeLogViewState extends State<HomeLogView> {
                                                           Utils.late,
                                                           style: TextStyles.alertTextStyle,
                                                         )
-                                                      : (DateTimeFormat.difference().inMinutes <=
-                                                              60)
+                                                      : (DateTimeFormat.difference().inMinutes <= 60)
                                                           ? Text(
                                                               Utils.veryLate,
                                                               style: TextStyles.alertTextStyle1,
                                                             )
-                                                          : (DateTimeFormat.difference()
-                                                                      .inMinutes <=
-                                                                  210)
+                                                          : (DateTimeFormat.difference().inMinutes <= 210)
                                                               ? Text(
                                                                   Utils.halfDay,
                                                                   style: TextStyles.alertTextStyle1,
@@ -604,8 +591,7 @@ class _HomeLogViewState extends State<HomeLogView> {
                                                           style: TextStyles.notificationTextStyle1,
                                                         ),
                                                       ),
-                                                      backgroundColor:
-                                                          ViewColor.notification_green_color,
+                                                      backgroundColor: ViewColor.notification_green_color,
                                                       flushbarPosition: FlushbarPosition.TOP,
                                                       flushbarStyle: FlushbarStyle.FLOATING,
                                                       duration: Duration(seconds: 2),
@@ -628,12 +614,10 @@ class _HomeLogViewState extends State<HomeLogView> {
                                                             messageText: Center(
                                                               child: Text(
                                                                 Utils.msgClockBreak,
-                                                                style: TextStyles
-                                                                    .notificationTextStyle1,
+                                                                style: TextStyles.notificationTextStyle1,
                                                               ),
                                                             ),
-                                                            backgroundColor:
-                                                                ViewColor.notification_green_color,
+                                                            backgroundColor: ViewColor.notification_green_color,
                                                             flushbarPosition: FlushbarPosition.TOP,
                                                             flushbarStyle: FlushbarStyle.FLOATING,
                                                             duration: Duration(seconds: 2),
@@ -649,19 +633,16 @@ class _HomeLogViewState extends State<HomeLogView> {
                                                         pressed: model.getLastLog(LogType.clockOut),
                                                         onPressed: () {
                                                           Navigator.of(context).pop();
-                                                          model.markClockOut(DateTimeFormat
-                                                              .calculateHoursForSingleDay(
-                                                                  model.logList));
+                                                          model.markClockOut(
+                                                              DateTimeFormat.calculateHoursForSingleDay(model.logList));
                                                           Flushbar(
                                                             messageText: Center(
                                                               child: Text(
                                                                 Utils.msgClockOut,
-                                                                style: TextStyles
-                                                                    .notificationTextStyle1,
+                                                                style: TextStyles.notificationTextStyle1,
                                                               ),
                                                             ),
-                                                            backgroundColor:
-                                                                ViewColor.notification_green_color,
+                                                            backgroundColor: ViewColor.notification_green_color,
                                                             flushbarPosition: FlushbarPosition.TOP,
                                                             flushbarStyle: FlushbarStyle.FLOATING,
                                                             duration: Duration(seconds: 2),

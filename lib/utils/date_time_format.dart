@@ -105,4 +105,20 @@ class DateTimeFormat {
     int sum = logs.fold(0, (totalDays, presentDays) => totalDays + presentDays.present);
     return sum;
   }
+
+  static double averageOfMonth(List<PresentByMonth> logs) {
+    var currentMonth = DateTime.now().month;
+
+    if (currentMonth == DateTime.january ||
+        currentMonth == DateTime.march ||
+        currentMonth == DateTime.may ||
+        currentMonth == DateTime.july ||
+        currentMonth == DateTime.august ||
+        currentMonth == DateTime.october ||
+        currentMonth == DateTime.december) {
+    } else if (currentMonth == DateTime.april || currentMonth == DateTime.june || currentMonth == DateTime.september) {
+    } else if (currentMonth == DateTime.february) {}
+
+    return 0;
+  }
 }
